@@ -193,10 +193,10 @@ BOOL CD3DPointCloudApp::OnIdle(LONG lCount)
 	// Compute time now.
 	float currentTime = (float)timeGetTime();
 	// Compute the difference: time elapsed in seconds.
-	float deltaTime = (currentTime - lastTime) * 0.001f;
+	float fElapsedTime  = (currentTime - lastTime) * 0.001f;
 	// Last time is now current time.
 	lastTime = currentTime;
-	cview->update(deltaTime);
+	cview->update(fElapsedTime );
 	cview->render();
 	return TRUE;
 }

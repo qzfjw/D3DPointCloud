@@ -4,9 +4,13 @@
 
 #pragma once
 #include <d3dx9.h>
-
+#include "DXUT.h"
+#include "DXUTcamera.h"
 class CD3DPointCloudView : public CView
 {
+private:
+	CModelViewerCamera    g_Camera;               // Camera for navigation
+	CMeshArcBall          g_ArcBall;
 private:
 	IDirect3DDevice9* _device;
 	D3DPRESENT_PARAMETERS _d3dpp;
@@ -56,6 +60,7 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };
 
 #ifndef _DEBUG  // D3DPointCloudView.cpp 中的调试版本

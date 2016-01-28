@@ -53,11 +53,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\Visual Studio Projects\D3DPointCloud\DXUT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx10.lib;d3dx9.lib;dxguid.lib;dxerr.lib;winmm.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -107,6 +108,14 @@
     <ClInclude Include="D3DPointCloud.h" />
     <ClInclude Include="D3DPointCloudDoc.h" />
     <ClInclude Include="D3DPointCloudView.h" />
+    <ClInclude Include="DXUT\DXUT.h" />
+    <ClInclude Include="DXUT\DXUTcamera.h" />
+    <ClInclude Include="DXUT\DXUTenum.h" />
+    <ClInclude Include="DXUT\DXUTgui.h" />
+    <ClInclude Include="DXUT\DXUTmisc.h" />
+    <ClInclude Include="DXUT\DXUTres.h" />
+    <ClInclude Include="DXUT\DXUTsettingsdlg.h" />
+    <ClInclude Include="GlobalPara.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -116,6 +125,14 @@
     <ClCompile Include="D3DPointCloud.cpp" />
     <ClCompile Include="D3DPointCloudDoc.cpp" />
     <ClCompile Include="D3DPointCloudView.cpp" />
+    <ClCompile Include="DXUT\DXUT.cpp" />
+    <ClCompile Include="DXUT\DXUTcamera.cpp" />
+    <ClCompile Include="DXUT\DXUTenum.cpp" />
+    <ClCompile Include="DXUT\DXUTgui.cpp" />
+    <ClCompile Include="DXUT\DXUTmisc.cpp" />
+    <ClCompile Include="DXUT\DXUTres.cpp" />
+    <ClCompile Include="DXUT\DXUTsettingsdlg.cpp" />
+    <ClCompile Include="GlobalPara.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

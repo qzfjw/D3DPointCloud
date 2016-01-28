@@ -123,7 +123,24 @@ HRESULT CD3DPointCloudView::setup(int width, int height)
 		D3DXMatrixPerspectiveFovLH(&P,D3DX_PI * 0.25f,//45-degree field of view
 			(float)width / (float)height,1.0f,1000.0f);
 		_device->SetTransform(D3DTS_PROJECTION, &P);
+
+		 // Setup the camera's view parameters
+		D3DXVECTOR3 vecEye( 2.0f, 1.0f, 0.0f );
+		D3DXVECTOR3 vecAt ( 0.0f, 0.0f, -0.0f );
+		g_Camera.SetViewParams( &vecEye, &vecAt );
+
+		// Setup the camera's projection parameters
+		float fAspectRatio = (float)width / (float)height;
+		g_Camera.SetProjParams( D3DX_PI / 4, fAspectRatio, 0.1f, 1000.0f );
+		g_Camera.SetWindow(width,height );
+
+		_device->SetTransform(D3DTS_WORLD, g_Camera.GetWorldMatrix());
+		_device->SetTransform(D3DTS_VIEW, g_Camera.GetViewMatrix());
+		_device->SetTransform(D3DTS_PROJECTION, g_Camera.GetProjMatrix());
 	}
+
+	
+
 	return S_OK;
 }
 HRESULT CD3DPointCloudView::cleanup()
@@ -132,7 +149,7 @@ HRESULT CD3DPointCloudView::cleanup()
 	return S_OK;
 }
 
-HRESULT CD3DPointCloudView::update(float timeDelta)
+HRESULT CD3DPointCloudView::update(float fElapsedTime )
 {
 	if( _device )
 	{
@@ -142,15 +159,34 @@ HRESULT CD3DPointCloudView::update(float timeDelta)
 		static float angle = 0.0f;
 		D3DXMATRIX yRotationMatrix;
 		D3DXMatrixRotationY(&yRotationMatrix, angle);
-		_device->SetTransform(D3DTS_WORLD, &yRotationMatrix);
-		angle += timeDelta;
+		//_device->SetTransform(D3DTS_WORLD, &yRotationMatrix);
+		angle += fElapsedTime ;
 		if(angle >= D3DX_PI * 2.0f)
 			angle = 0.0f;
 	}
+	 g_Camera.FrameMove( fElapsedTime  );
+	
 	return S_OK;
 }
 HRESULT CD3DPointCloudView::render()
 {
+	//HRESULT hr;
+    D3DXMATRIXA16 mWorld;
+    D3DXMATRIXA16 mView;
+    D3DXMATRIXA16 mProj;
+    //D3DXMATRIXA16 mWorldViewProjection;
+
+
+	mWorld = *g_Camera.GetWorldMatrix();
+    mView =  *g_Camera.GetViewMatrix();
+    mProj =  *g_Camera.GetProjMatrix();
+	//mWorldViewProjection = mWorld * mView * mProj;
+
+	//_device->SetTransform(D3DTS_WORLD, &mWorld);
+	_device->SetTransform(D3DTS_VIEW, &mView);
+	//_device->SetTransform(D3DTS_PROJECTION, &mProj);
+	
+
 	if( _device )
 	{
 		//
@@ -309,4 +345,18 @@ BOOL CD3DPointCloudView::OnEraseBkgnd(CDC* pDC)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	return FALSE;
 	return CView::OnEraseBkgnd(pDC);
+}
+
+
+LRESULT CD3DPointCloudView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	// Pass all remaining windows messages to camera so it can respond to user input
+	
+	CWnd* pWnd = (CWnd*)(AfxGetApp()->m_pMainWnd);
+	HWND hWnd = pWnd->GetSafeHwnd();
+	g_Camera.HandleMessages( hWnd, message, wParam, lParam );
+
+	
+	return CView::WindowProc(message, wParam, lParam);
 }

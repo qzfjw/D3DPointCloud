@@ -196,8 +196,10 @@ BOOL CD3DPointCloudApp::OnIdle(LONG lCount)
 	float fElapsedTime  = (fTime - lastTime) * 0.001f;
 	// Last time is now current time.
 	lastTime = fTime;
-	cview->update(fElapsedTime );
-	cview->render(fTime, fElapsedTime);
+	//cview->update(fElapsedTime );
+	//cview->render(fTime, fElapsedTime);
+	cview->FrameMove(fTime, fElapsedTime);
+	cview->FrameRender(fTime, fElapsedTime);
 	return TRUE;
 }
 

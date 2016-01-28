@@ -98,6 +98,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="MeshFromOBJ.fx" />
     <None Include="ReadMe.txt" />
     <None Include="res\D3DPointCloud.ico" />
     <None Include="res\D3DPointCloud.rc2" />
@@ -115,8 +116,10 @@
     <ClInclude Include="DXUT\DXUTmisc.h" />
     <ClInclude Include="DXUT\DXUTres.h" />
     <ClInclude Include="DXUT\DXUTsettingsdlg.h" />
+    <ClInclude Include="DXUT\SDKmisc.h" />
     <ClInclude Include="GlobalPara.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -132,8 +135,10 @@
     <ClCompile Include="DXUT\DXUTmisc.cpp" />
     <ClCompile Include="DXUT\DXUTres.cpp" />
     <ClCompile Include="DXUT\DXUTsettingsdlg.cpp" />
+    <ClCompile Include="DXUT\SDKmisc.cpp" />
     <ClCompile Include="GlobalPara.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

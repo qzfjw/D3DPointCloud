@@ -31,6 +31,7 @@
     <None Include="res\Toolbar.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="MeshFromOBJ.fx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DPointCloud.h">
@@ -78,6 +79,12 @@
     <ClInclude Include="DXUT\DXUTsettingsdlg.h">
       <Filter>DXUT</Filter>
     </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DXUT\SDKmisc.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DPointCloud.cpp">
@@ -117,6 +124,12 @@
       <Filter>DXUT</Filter>
     </ClCompile>
     <ClCompile Include="DXUT\DXUTsettingsdlg.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUT\SDKmisc.cpp">
       <Filter>DXUT</Filter>
     </ClCompile>
   </ItemGroup>

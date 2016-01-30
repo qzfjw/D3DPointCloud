@@ -143,13 +143,17 @@ HRESULT CD3DPointCloudView::ResetDevice(int width, int height)
 		
 		// Setup the camera's view parameters
 		D3DXVECTOR3 vecEye( 2.0f, 1.0f, 0.0f );
+		//D3DXVECTOR3 vecEye( 0.0f, 0.0f, -3.2e23f );
 		D3DXVECTOR3 vecAt ( 0.0f, 0.0f, -0.0f );
 		g_Camera.SetViewParams( &vecEye, &vecAt );
 
 		// Setup the camera's projection parameters
 		float fAspectRatio = (float)width / (float)height;
-		g_Camera.SetProjParams( D3DX_PI / 4, fAspectRatio, 0.1f, 1000.0f );
+		g_Camera.SetProjParams( D3DX_PI / 4, fAspectRatio,0.1f,1000.0f );
 		g_Camera.SetWindow(width,height );
+
+		//g_PlyMeshLoader.LoadFromFile(m_pd3dDevice,"media\\LUNGU5.ply",0);
+		g_PlyMeshLoader.ResetDevice();
 
 		
 	}
@@ -159,6 +163,8 @@ void CD3DPointCloudView::LostDevice()
 {
 	if( g_pEffect )
         g_pEffect->OnLostDevice();
+	g_PlyMeshLoader.LostDevice();
+	
 }
 HRESULT CD3DPointCloudView::CreateDevice(int width, int height)
 {
@@ -166,6 +172,7 @@ HRESULT CD3DPointCloudView::CreateDevice(int width, int height)
 	WCHAR str[MAX_PATH];
 	// Create the mesh and load it with data already gathered from a file
 	V_RETURN( g_MeshLoader.Create( m_pd3dDevice, L"media\\cup.obj" ) );
+	g_PlyMeshLoader.LoadFromFile(m_pd3dDevice,"media\\LUNGU5.ply",0);
 		// Read the D3DX effect file
 	V_RETURN( DXUTFindDXSDKMediaFileCch( str, MAX_PATH, L"MeshFromOBJ.fx" ) );
 
@@ -257,22 +264,31 @@ HRESULT CD3DPointCloudView::FrameRender(double fTime, float fElapsedTime)
         V( g_pEffect->SetFloat( g_hTime, ( float )fTime ) );
         V( g_pEffect->SetValue( g_hCameraPosition, g_Camera.GetEyePt(), sizeof( D3DXVECTOR3 ) ) );
 
-        //UINT iCurSubset = ( UINT )( INT_PTR )g_SampleUI.GetComboBox( IDC_SUBSET )->GetSelectedData();
-		UINT iCurSubset = -1;
-        // A subset of -1 was arbitrarily chosen to represent all subsets
-        if( iCurSubset == -1 )
-        {
-            // Iterate through subsets, changing material properties for each
-            for( UINT iSubset = 0; iSubset < g_MeshLoader.GetNumMaterials(); iSubset++ )
-            {
-                RenderSubset( iSubset );
-            }
-        }
-        else
-        {
-            RenderSubset( iCurSubset );
-        }
-
+  //      //UINT iCurSubset = ( UINT )( INT_PTR )g_SampleUI.GetComboBox( IDC_SUBSET )->GetSelectedData();
+		//UINT iCurSubset = -1;
+  //      // A subset of -1 was arbitrarily chosen to represent all subsets
+  //      if( iCurSubset == -1 )
+  //      {
+  //          // Iterate through subsets, changing material properties for each
+  //          for( UINT iSubset = 0; iSubset < g_MeshLoader.GetNumMaterials(); iSubset++ )
+  //          {
+  //              RenderSubset( iSubset );
+  //          }
+  //      }
+  //      else
+  //      {
+  //          RenderSubset( iCurSubset );
+  //      }
+		//D3DXMatrixTranslation(&mWorld,0.0f,0.0f,-5.0f);
+		//mWorld *= (*g_Camera.GetWorldMatrix());
+		m_pd3dDevice->SetVertexShader(NULL);
+		m_pd3dDevice->SetPixelShader(NULL);
+		m_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+		m_pd3dDevice->SetTransform(D3DTS_WORLD,g_Camera.GetWorldMatrix());
+		//m_pd3dDevice->SetTransform(D3DTS_WORLD, &mWorld);
+		m_pd3dDevice->SetTransform(D3DTS_VIEW, g_Camera.GetViewMatrix());
+		m_pd3dDevice->SetTransform(D3DTS_PROJECTION, g_Camera.GetProjMatrix());
+		RenderPoly();
        
 
         V( m_pd3dDevice->EndScene() );
@@ -320,7 +336,10 @@ void CD3DPointCloudView::RenderSubset( UINT iSubset )
     }
     V( g_pEffect->End() );
 }
-
+void CD3DPointCloudView::RenderPoly()
+{
+	g_PlyMeshLoader.Render();
+}
 
 CD3DPointCloudView::~CD3DPointCloudView()
 {

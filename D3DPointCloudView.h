@@ -7,12 +7,15 @@
 #include "DXUT.h"
 #include "DXUTcamera.h"
 #include "meshloader.h"
+#include "PlyMeshLoader.h"
+
 class CD3DPointCloudView : public CView
 {
 private:
 	CModelViewerCamera    g_Camera;               // Camera for navigation
 	CMeshArcBall          g_ArcBall;
 	CMeshLoader           g_MeshLoader;            // Loads a mesh from an .obj file
+	CPlyMeshLoader        g_PlyMeshLoader;
 	ID3DXEffect*          g_pEffect;        // D3DX effect interface
 	int m_iWidth;   //width and height of window
 	int m_iHeight;
@@ -38,6 +41,7 @@ private:
 private:
 	HRESULT InitD3D(HWND hwnd,int width,int height,bool windowed,D3DDEVTYPE deviceType);
 	void    RenderSubset( UINT iSubset );
+	void    RenderPoly();
 public:
 
 	//--------------------------------------------------------------------------------------

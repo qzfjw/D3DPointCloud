@@ -19,6 +19,7 @@ private:
 	ID3DXEffect*          g_pEffect;        // D3DX effect interface
 	int m_iWidth;   //width and height of window
 	int m_iHeight;
+	D3DXMATRIX m_matTranslation;
 	//--------------------------------------------------------------------------------------
 	// Effect parameter handles
 	//--------------------------------------------------------------------------------------

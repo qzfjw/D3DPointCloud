@@ -13,9 +13,19 @@ CPlyMeshLoader::CPlyMeshLoader()
 	m_pD3DIB = NULL;
 
 }
+float CPlyMeshLoader::GetFloat(unsigned char *buf)
+{
+	
+	/*unsigned char temp[sizeof(float)];
+	for(int k=0; k < sizeof(float); k++)
+		temp[sizeof(float)-k-1]=*buf++;
 
+	float *p = (float *) temp;*/
+	float *p = (float*)buf;
+	return *p;
+}
 
-LRESULT CPlyMeshLoader::LoadFromFile(IDirect3DDevice9 *pDevice,char*filename,int type)
+LRESULT CPlyMeshLoader::LoadFromFile(IDirect3DDevice9 *pDevice,char*filename,int type,D3DXMATRIX*mat)
 {
 	
 	FILE	 *fp;
@@ -32,43 +42,44 @@ LRESULT CPlyMeshLoader::LoadFromFile(IDirect3DDevice9 *pDevice,char*filename,int
 		m_pVB = NULL;
 	}
 	SkipHeader(fp);//skip remain header
-	//printf("%ld\n",vn);
+	fseek(fp,1,SEEK_CUR);
+	
 
 	m_pVB = ( CUSTOM_VERT_POS*)malloc(vn*sizeof(CUSTOM_VERT_POS));//read vertex data 
 	CUSTOM_VERT_POS*pVertex=m_pVB;
-	//long rvn = fread((void*)m_pVB,sizeof(CUSTOM_VERT_POS),vn,fp);
-
-	//memcpy( pVerts, m_pVB, m_iNumRows*m_iNumCols*sizeof(CUSTOM_VERT_POS_NORMAL_TEXTURE0) );
-
-	float F6[6];
-	double maxx=DBL_MIN,maxy=DBL_MIN,maxz=DBL_MIN;
-	double minx=DBL_MAX,miny=DBL_MAX,minz=DBL_MAX;
-
+	
+	unsigned char RF6[6*sizeof(float)];
+	float maxx,maxy,maxz,minx,miny,minz; 
+	maxx=maxy=maxz=FLT_MIN;
+	minx=miny=minz=FLT_MAX;
 	for(long i=0; (i<vn)&&!feof(fp); i++)
 	{
-		float *p;
-		fread((void*)F6,sizeof(float),6,fp);//读取6个浮点数
-		p=F6;
-
-		if(*p>maxx)maxx=*p;
-		else if(*p<minx)minx=*p;
-		pVertex->x = *p++;
-
-		if(*p>maxy)maxy=*p;
-		else if(*p<miny)miny=*p;
-		pVertex->y = *p++;
-
-		if(*p>maxz)maxz=*p;
-		else if(*p<minz)minz=*p;
-		pVertex->z = *p++;
-
+		fread((void*)RF6,sizeof(float),6,fp);//读取6个浮点数
+		unsigned char *p = RF6;
+		pVertex->x =GetFloat(p);
+		p+=sizeof(float);
+		pVertex->y = GetFloat(p);
+		p+=sizeof(float);
+		pVertex->z = GetFloat(p);
+	
+		if(pVertex->x>maxx)maxx=pVertex->x;
+		else if(pVertex->x<minx)minx=pVertex->x;
+		
+		if(pVertex->y>maxy)maxy=pVertex->y;
+		else if(pVertex->y<miny)miny=pVertex->y;
+		
+		if(pVertex->z>maxz)maxz=pVertex->z;
+		else if(pVertex->z<minz)minz=pVertex->z;
+		
 		pVertex++;
 
 	}
-	//D3DXVECTOR3 v3max(maxx,maxy,maxz);
-	//D3DXVECTOR3 v3min(minx,miny,minz);
+	D3DXVECTOR3 v3max(maxx,maxy,maxz);
+	D3DXVECTOR3 v3min(minx,miny,minz);
+	v3max = (v3max + v3min)/2;
+	D3DXMatrixTranslation(mat,-v3max.x,-v3max.y,-v3max.z);
 	//D3DXVECTOR3 dis(1.0f/(maxx-minx),1.0f/(maxy-miny),1.0f/(maxz-minz));
-	double dx=1.0/(maxx-minx),dy=1.0/(maxy-miny),dz=1.0/(maxz-minz);
+	/*double dx=1.0/(maxx-minx),dy=1.0/(maxy-miny),dz=1.0/(maxz-minz);
 
 
 	pVertex=m_pVB;
@@ -78,7 +89,7 @@ LRESULT CPlyMeshLoader::LoadFromFile(IDirect3DDevice9 *pDevice,char*filename,int
 		pVertex->y = -1.0f + (pVertex->y - miny)*dy*2.0;
 		pVertex->z = -1.0f + (pVertex->z - minz)*dz*2.0;
 		pVertex++;
-	}
+	}*/
 
 	m_iVertex = vn;
 	m_pDevice = pDevice;
@@ -95,9 +106,12 @@ void CPlyMeshLoader::Render()
 	m_pDevice->SetStreamSource(0, m_pD3DVB, 0, sizeof(CUSTOM_VERT_POS));
 	m_pDevice->SetIndices(NULL);
 	m_pDevice->SetFVF(D3D_FVF_CUSTOMVERTEX_POS);
+	//m_pDevice->SetRenderState( D3DRS_CULLMODE,   D3DCULL_NONE);
 	//pD3DDevice->SetIndices(g_pIB);
 	//pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, g_iNumRows*g_iNumCols, 0, (g_iNumRows-1)*(g_iNumCols-1)*2)))
 	m_pDevice->DrawPrimitive(D3DPT_POINTLIST,0, m_iVertex);
+	//m_pDevice->DrawPrimitiveUP(D3DPT_POINTLIST,m_iVertex,m_pVB,sizeof(CUSTOM_VERT_POS));
+	//m_pDevice->DrawPrimitive(D3DPT_LINESTRIP,0,m_iVertex-1);
 				
 
 }

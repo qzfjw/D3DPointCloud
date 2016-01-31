@@ -39,6 +39,7 @@ CD3DPointCloudView::CD3DPointCloudView()
 {
 	// TODO: 在此处添加构造代码
 	::ZeroMemory(&m_d3dpp, sizeof(m_d3dpp));
+	D3DXMatrixIdentity(&m_matTranslation);
 	g_pEffect = NULL;      
 
 	g_hAmbient = NULL;
@@ -143,13 +144,15 @@ HRESULT CD3DPointCloudView::ResetDevice(int width, int height)
 		
 		// Setup the camera's view parameters
 		D3DXVECTOR3 vecEye( 2.0f, 1.0f, 0.0f );
-		//D3DXVECTOR3 vecEye( 0.0f, 0.0f, -3.2e23f );
-		D3DXVECTOR3 vecAt ( 0.0f, 0.0f, -0.0f );
+		//D3DXVECTOR3 vecAt ( 0.0f, 0.0f, -0.0f );
+		//D3DXVECTOR3 vecEye( 4.0f, 22.0f, 432.0f );
+		D3DXVECTOR3 vecAt ( -6.08f, 12.37f, 422.2f );
 		g_Camera.SetViewParams( &vecEye, &vecAt );
+		//g_Camera.SetRadius(100.0f,1.0f);
 
 		// Setup the camera's projection parameters
 		float fAspectRatio = (float)width / (float)height;
-		g_Camera.SetProjParams( D3DX_PI / 4, fAspectRatio,0.1f,1000.0f );
+		g_Camera.SetProjParams( D3DX_PI / 4, fAspectRatio,0.1f,1.0e5f);
 		g_Camera.SetWindow(width,height );
 
 		//g_PlyMeshLoader.LoadFromFile(m_pd3dDevice,"media\\LUNGU5.ply",0);
@@ -172,7 +175,7 @@ HRESULT CD3DPointCloudView::CreateDevice(int width, int height)
 	WCHAR str[MAX_PATH];
 	// Create the mesh and load it with data already gathered from a file
 	V_RETURN( g_MeshLoader.Create( m_pd3dDevice, L"media\\cup.obj" ) );
-	g_PlyMeshLoader.LoadFromFile(m_pd3dDevice,"media\\LUNGU5.ply",0);
+	g_PlyMeshLoader.LoadFromFile(m_pd3dDevice,"media\\LUNGU5.ply",0,&m_matTranslation);
 		// Read the D3DX effect file
 	V_RETURN( DXUTFindDXSDKMediaFileCch( str, MAX_PATH, L"MeshFromOBJ.fx" ) );
 
@@ -281,11 +284,13 @@ HRESULT CD3DPointCloudView::FrameRender(double fTime, float fElapsedTime)
   //      }
 		//D3DXMatrixTranslation(&mWorld,0.0f,0.0f,-5.0f);
 		//mWorld *= (*g_Camera.GetWorldMatrix());
+		D3DXMatrixScaling(&m_matTranslation,0.5f,0.5f,0.5f);
+		D3DXMATRIX world =m_matTranslation*(*g_Camera.GetWorldMatrix());
 		m_pd3dDevice->SetVertexShader(NULL);
 		m_pd3dDevice->SetPixelShader(NULL);
-		m_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-		m_pd3dDevice->SetTransform(D3DTS_WORLD,g_Camera.GetWorldMatrix());
-		//m_pd3dDevice->SetTransform(D3DTS_WORLD, &mWorld);
+		//m_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+		//m_pd3dDevice->SetTransform(D3DTS_WORLD,g_Camera.GetWorldMatrix());
+		//m_pd3dDevice->SetTransform(D3DTS_WORLD, &m_matTranslation);
 		m_pd3dDevice->SetTransform(D3DTS_VIEW, g_Camera.GetViewMatrix());
 		m_pd3dDevice->SetTransform(D3DTS_PROJECTION, g_Camera.GetProjMatrix());
 		RenderPoly();

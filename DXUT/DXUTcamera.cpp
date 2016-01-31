@@ -930,7 +930,7 @@ VOID CModelViewerCamera::FrameMove( FLOAT fElapsedTime )
 
     // Change the radius from the camera to the model based on wheel scrolling
     if( m_nMouseWheelDelta && m_nZoomButtonMask == MOUSE_WHEEL )
-        m_fRadius -= m_nMouseWheelDelta * m_fRadius * 0.1f / 120.0f;
+        m_fRadius -= m_nMouseWheelDelta * m_fRadius * 0.1f / 120.0f*10;
     m_fRadius = __min( m_fMaxRadius, m_fRadius );
     m_fRadius = __max( m_fMinRadius, m_fRadius );
     m_nMouseWheelDelta = 0;

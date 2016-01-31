@@ -57,7 +57,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;winmm.lib;dxerr.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -104,15 +104,22 @@
     <None Include="res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcBall.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="D3DAppMain.h" />
     <ClInclude Include="D3DPointCloud.h" />
     <ClInclude Include="D3DPointCloudDoc.h" />
     <ClInclude Include="D3DPointCloudView.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArcBall.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="D3DAppMain.cpp" />
     <ClCompile Include="D3DPointCloud.cpp" />
     <ClCompile Include="D3DPointCloudDoc.cpp" />
     <ClCompile Include="D3DPointCloudView.cpp" />

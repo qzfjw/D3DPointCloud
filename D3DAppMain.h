@@ -4,16 +4,8 @@
 
 #include "Camera.h"
 #include "Math.h"
+#include "MeshArcBall.h"
 
-#ifndef SAFE_DELETE
-#define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }
-#endif    
-#ifndef SAFE_DELETE_ARRAY
-#define SAFE_DELETE_ARRAY(p) { if (p) { delete[] (p);   (p)=NULL; } }
-#endif    
-#ifndef SAFE_RELEASE
-#define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
-#endif
 
 class CD3DAppMain
 {
@@ -56,8 +48,10 @@ private:
 
 private:
 	Camera*					camera;			// Model-view camera
+	
 private:
 	ID3DXMesh* teapot_;
+	CMeshArcBall* pMeshArcBall_;
 	
 };
 

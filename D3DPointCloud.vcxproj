@@ -112,6 +112,7 @@
     <ClInclude Include="D3DPointCloudView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="MeshArcBall.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -124,6 +125,7 @@
     <ClCompile Include="D3DPointCloudDoc.cpp" />
     <ClCompile Include="D3DPointCloudView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MeshArcBall.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

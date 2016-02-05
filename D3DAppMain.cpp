@@ -14,16 +14,24 @@ CD3DAppMain::CD3DAppMain(void)
 {
 	camera = new Camera();
 	teapot_ = NULL;
+	pMeshArcBall_ = NULL;
+	//pMeshArcBall_ = new CMeshArcBall();
+	//pMeshArcBall_->
+
 }
 
 CD3DAppMain::~CD3DAppMain(void)
 {
 	SAFE_DELETE(camera);
+	SAFE_DELETE(pMeshArcBall_);
+	//SAFE_RELEASE(teapot_);
 	// Release Direct3D Device
 	SAFE_RELEASE(d3ddevice_);
 	// Release Direct3D object
+	
 	SAFE_RELEASE(d3d_);
-	SAFE_RELEASE(teapot_);
+	
+
 	
 }
 void CD3DAppMain::InitD3D9(HWND hWnd)
@@ -115,10 +123,11 @@ void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
 		
 		//draw all unit cubes to build the Rubik cube
 		// Restore world matrix since the Draw function in class Cube has set the world matrix for each cube
-		//D3DXMATRIX matWorld = camera_->GetWorldMatrix() ;
-		//d3ddevice_->SetTransform(D3DTS_WORLD, &matWorld) ;
+		D3DXMATRIX matWorld = camera->GetWorldMatrix() ;
+		d3ddevice_->SetTransform(D3DTS_WORLD, &matWorld) ;
 		if(teapot_)
 			teapot_->DrawSubset(0);
+		pMeshArcBall_->Render();
 
 		d3ddevice_->EndScene();
 	}
@@ -226,14 +235,17 @@ HRESULT CD3DAppMain::ResetDevice()
 		DXTRACE_ERR_MSGBOX(errorString, hr) ;
 	}
 
-	if(teapot_==NULL){
+	if(teapot_==NULL)
 		D3DXCreateTeapot(d3ddevice_, &teapot_, 0);
-	}
+	
+	if(pMeshArcBall_==NULL)
+		pMeshArcBall_ = new CMeshArcBall(d3ddevice_);
 	return hr ;
 }
 void CD3DAppMain::FrameMove()
 {
 	camera->OnFrameMove() ;
+	pMeshArcBall_->OnFrameMove();
 }
 // Calculate the picking ray and transform it to model space 
 // x and y are the screen coordinates when left button down
@@ -418,7 +430,8 @@ LRESULT CD3DAppMain::HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			return 0 ;    
 	}
 
-	return camera->HandleMessages(hWnd, uMsg, wParam, lParam);
+	camera->HandleMessages(hWnd, uMsg, wParam, lParam);
+	return pMeshArcBall_->HandleMessages(hWnd, uMsg, wParam, lParam);
 }
 
 // Switch from window mode and full-screen mode

@@ -10,25 +10,33 @@ CD3DAppMain::CD3DAppMain(void)
 	  last_window_width_(0),
 	  last_window_height_(0),
 	  screen_width_(0),
-	  screen_height_(0)
+	  screen_height_(0),
+	  nActiveMesh_(0)
 {
 	camera = new Camera();
 	teapot_ = NULL;
-	pMeshArcBall_ = NULL;
-	//pMeshArcBall_ = new CMeshArcBall();
-	//pMeshArcBall_->
+	meshes_.RemoveAll();
+	//pMeshArcBall_ = NULL;
+	//meshes_.
+	
 
 }
 
 CD3DAppMain::~CD3DAppMain(void)
 {
 	SAFE_DELETE(camera);
-	SAFE_DELETE(pMeshArcBall_);
+	//SAFE_DELETE(pMeshArcBall_);
+	
 	//SAFE_RELEASE(teapot_);
+	
+	
+    for( int i = 0; i < meshes_.GetSize(); ++i )
+       meshes_[i].Destroy();
+    meshes_.RemoveAll();
 	// Release Direct3D Device
 	SAFE_RELEASE(d3ddevice_);
-	// Release Direct3D object
 	
+	// Release Direct3D object
 	SAFE_RELEASE(d3d_);
 	
 
@@ -125,9 +133,17 @@ void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
 		// Restore world matrix since the Draw function in class Cube has set the world matrix for each cube
 		D3DXMATRIX matWorld = camera->GetWorldMatrix() ;
 		d3ddevice_->SetTransform(D3DTS_WORLD, &matWorld) ;
-		if(teapot_)
-			teapot_->DrawSubset(0);
-		pMeshArcBall_->Render();
+		//if(teapot_)
+		//	teapot_->DrawSubset(0);
+		//pMeshArcBall_->Render();
+
+		for( int i = 0; i < meshes_.GetSize(); ++i )
+		{
+			
+			 meshes_[i].Render(d3ddevice_);
+			 //CMeshArcBall temp = meshes_[i];
+			 //temp.Render(d3ddevice_);
+		}
 
 		d3ddevice_->EndScene();
 	}
@@ -206,6 +222,11 @@ void CD3DAppMain::ResizeD3DScene(int width, int height)
 }
 HRESULT CD3DAppMain::ResetDevice()
 {
+	for( int i = 0; i < meshes_.GetSize(); ++i )
+	{
+		meshes_[i].Destroy();
+	}
+	meshes_.RemoveAll();
 	// Check device state
 	HRESULT hr = d3ddevice_->TestCooperativeLevel() ;
 	
@@ -235,17 +256,28 @@ HRESULT CD3DAppMain::ResetDevice()
 		DXTRACE_ERR_MSGBOX(errorString, hr) ;
 	}
 
-	if(teapot_==NULL)
-		D3DXCreateTeapot(d3ddevice_, &teapot_, 0);
-	
-	if(pMeshArcBall_==NULL)
-		pMeshArcBall_ = new CMeshArcBall(d3ddevice_);
+	//if(teapot_==NULL)
+	//	D3DXCreateTeapot(d3ddevice_, &teapot_, 0);
+	CMeshArcBall* pNewMesh;
+	for( int i = 0; i < 10; ++i )
+	{
+		pNewMesh = new CMeshArcBall();
+		pNewMesh->Create(L"xx0",d3ddevice_);
+		pNewMesh->SetOrgin(D3DXVECTOR3(2.0f*i-10,0.0f,0.0f));
+		meshes_.Add(*pNewMesh);
+		SAFE_DELETE(pNewMesh);
+	}
+	nActiveMesh_ = 6;
 	return hr ;
 }
 void CD3DAppMain::FrameMove()
 {
 	camera->OnFrameMove() ;
-	pMeshArcBall_->OnFrameMove();
+	//pMeshArcBall_->OnFrameMove();
+	for( int i = 0; i < meshes_.GetSize(); ++i )
+	{
+		meshes_[i].OnFrameMove();
+	}
 }
 // Calculate the picking ray and transform it to model space 
 // x and y are the screen coordinates when left button down
@@ -430,8 +462,12 @@ LRESULT CD3DAppMain::HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			return 0 ;    
 	}
 
-	camera->HandleMessages(hWnd, uMsg, wParam, lParam);
-	return pMeshArcBall_->HandleMessages(hWnd, uMsg, wParam, lParam);
+	HRESULT hr = camera->HandleMessages(hWnd, uMsg, wParam, lParam);
+	if( meshes_.GetSize() > 0 )
+        hr = meshes_[nActiveMesh_].HandleMessages( hWnd, uMsg, wParam, lParam);
+	 //hr = meshes_[1].HandleMessages( hWnd, uMsg, wParam, lParam);
+	//return pMeshArcBall_->HandleMessages(hWnd, uMsg, wParam, lParam);
+	 return hr;
 }
 
 // Switch from window mode and full-screen mode

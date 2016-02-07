@@ -2,6 +2,7 @@
 #include <d3dx9.h>
 #include <DxErr.h>
 
+#include "DXUTmisc.h"
 #include "Camera.h"
 #include "Math.h"
 #include "MeshArcBall.h"
@@ -51,7 +52,10 @@ private:
 	
 private:
 	ID3DXMesh* teapot_;
-	CMeshArcBall* pMeshArcBall_;
+	//CMeshArcBall* pMeshArcBall_;
+	
+	int nActiveMesh_;
+	CGrowableArray <CMeshArcBall> meshes_;           // List of meshes being rendered
 	
 };
 

@@ -9,7 +9,7 @@ ArcBall::ArcBall(void)
 	  old_point_(D3DXVECTOR3(0, 0, 0)),
 	  previous_quaternion_(D3DXQUATERNION(0, 0, 0, 1)),
       current_quaternion_(D3DXQUATERNION(0, 0, 0, 1)),
-      rotation_increament_(D3DXQUATERNION(0, 0, 0, 1))
+      rotation_increament_(D3DXQUATERNION(0, 0, 0, 1))	  
 {
 	D3DXMatrixIdentity(&rotate_matrix_);
 
@@ -20,6 +20,7 @@ ArcBall::ArcBall(void)
 	int window_height = rc.bottom - rc.top;
 
 	SetWindow(window_width, window_height) ;
+	center_ = D3DXVECTOR2(window_width/2.0f,window_height/2.0f);
 }
 
 ArcBall::~ArcBall(void)
@@ -101,8 +102,11 @@ D3DXQUATERNION ArcBall::QuatFromBallPoints(D3DXVECTOR3& start_point, D3DXVECTOR3
 D3DXVECTOR3 ArcBall::ScreenToVector(int screen_x, int screen_y)
 {
 	// Scale to screen
-	float x = -(screen_x - window_width_ / 2) / (radius_ * window_width_ / 2);
-	float y = (screen_y - window_height_ / 2) / (radius_ * window_height_ / 2);
+	//float x = -(screen_x - window_width_ / 2) / (radius_ * window_width_ / 2);
+	//float y = (screen_y - window_height_ / 2) / (radius_ * window_height_ / 2);
+
+	float x = -(screen_x - center_.x) / (radius_ * window_width_ / 2);
+	float y = (screen_y - center_.y) / (radius_ * window_height_ / 2);
 
 	float z = 0.0f;
 	float mag = x * x + y * y;

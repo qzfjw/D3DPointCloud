@@ -20,7 +20,7 @@ public:
 	D3DXQUATERNION GetRotationQuatIncreament() ;
 	void SetWindow(int window_width, int window_height, float arcball_radius = 1.0f) ;
 
-private:
+protected:
 	int		window_width_ ;	// arc ball's window width
 	int		window_height_ ; // arc ball's window height
 	float	radius_ ;	// arc ball's radius in screen coordinates
@@ -34,8 +34,10 @@ private:
 	D3DXVECTOR3		old_point_ ;			// old point 
 	D3DXMATRIXA16	rotate_matrix_;			// rotation matrix
 
+	D3DXVECTOR2 center_;//rotation center
+
 	// Convert scree point to arcball point(vector)
-	D3DXVECTOR3	ScreenToVector(int screen_x, int screen_y) ;
+	virtual D3DXVECTOR3	ScreenToVector(int screen_x, int screen_y) ;
 
 };
 

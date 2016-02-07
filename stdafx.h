@@ -4,24 +4,14 @@
 // 特定于项目的包含文件
 
 #pragma once
-
-#ifndef SAFE_DELETE
-#define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }
-#endif    
-#ifndef SAFE_DELETE_ARRAY
-#define SAFE_DELETE_ARRAY(p) { if (p) { delete[] (p);   (p)=NULL; } }
-#endif    
-#ifndef SAFE_RELEASE
-#define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
-#endif
-#ifndef _SECURE_ATL
-#define _SECURE_ATL 1
-#endif
-
+#include "DXUTmisc.h"
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN            // 从 Windows 头中排除极少使用的资料
 #endif
 
+#ifndef _SECURE_ATL
+#define _SECURE_ATL 1
+#endif
 #include "targetver.h"
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的

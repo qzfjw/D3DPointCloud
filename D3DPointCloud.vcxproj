@@ -110,6 +110,7 @@
     <ClInclude Include="D3DPointCloud.h" />
     <ClInclude Include="D3DPointCloudDoc.h" />
     <ClInclude Include="D3DPointCloudView.h" />
+    <ClInclude Include="DXUTmisc.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MeshArcBall.h" />
@@ -124,6 +125,7 @@
     <ClCompile Include="D3DPointCloud.cpp" />
     <ClCompile Include="D3DPointCloudDoc.cpp" />
     <ClCompile Include="D3DPointCloudView.cpp" />
+    <ClCompile Include="DXUTmisc.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MeshArcBall.cpp" />
     <ClCompile Include="stdafx.cpp">

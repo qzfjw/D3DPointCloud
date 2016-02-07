@@ -69,6 +69,9 @@
     <ClInclude Include="DXUTmisc.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PlyMeshArcBall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DPointCloud.cpp">
@@ -99,6 +102,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DXUTmisc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlyMeshArcBall.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

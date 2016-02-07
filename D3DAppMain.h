@@ -5,7 +5,8 @@
 #include "DXUTmisc.h"
 #include "Camera.h"
 #include "Math.h"
-#include "MeshArcBall.h"
+//#include "MeshArcBall.h"
+#include "PlyMeshArcBall.h"
 
 
 class CD3DAppMain
@@ -55,7 +56,8 @@ private:
 	//CMeshArcBall* pMeshArcBall_;
 	
 	int nActiveMesh_;
-	CGrowableArray <CMeshArcBall> meshes_;           // List of meshes being rendered
+	//CGrowableArray <CMeshArcBall> meshes_;           // List of meshes being rendered
+	CGrowableArray <CPlyMeshArcBall> meshes_;           // List of meshes being rendered
 	
 };
 

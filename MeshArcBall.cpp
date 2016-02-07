@@ -49,10 +49,10 @@ HRESULT CMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice 
 
 void CMeshArcBall::Reset() 
 {
-	frame_need_update_ = false ;
+	/*frame_need_update_ = false ;
 	Destroy();
 	D3DXMatrixIdentity(&world_matrix_) ;
-	world_arcball_.Reset();
+	world_arcball_.Reset();*/
 }
 void CMeshArcBall::Destroy()
 {

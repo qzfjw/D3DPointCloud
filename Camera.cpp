@@ -2,7 +2,7 @@
 #include "Camera.h"
 
 Camera::Camera(void)
-    : radius_(5),
+    : radius_(1),
 	  min_radius_(1),
 	  max_radius_(300),
 	  mouse_wheel_delta_(0),

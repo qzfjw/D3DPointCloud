@@ -108,9 +108,29 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	
 	// Setup projection matrix
 	float aspectRatio = (float)d3dpp_.BackBufferWidth / (float)d3dpp_.BackBufferHeight ;
-	camera->SetProjParams(D3DX_PI / 4, aspectRatio, 1.0f, 1000.0f) ;
+	camera->SetProjParams(D3DX_PI /4, aspectRatio, 1.0f,1000.0f) ;
 
 	ResetDevice();
+
+	
+	/*CMeshArcBall* pNewMesh;
+	for( int i = 0; i < 10; ++i )
+	{
+		pNewMesh = new CMeshArcBall();
+		pNewMesh->Create(L"xx0",d3ddevice_);
+		pNewMesh->SetOrgin(D3DXVECTOR3(2.0f*i-10,0.0f,0.0f));
+		meshes_.Add(*pNewMesh);
+		SAFE_DELETE(pNewMesh);
+	}
+	nActiveMesh_ = 6;*/
+	CPlyMeshArcBall* pNewMesh;
+	pNewMesh = new CPlyMeshArcBall();
+	pNewMesh->Create(L"media\\LUNGU5.ply",d3ddevice_);
+	//pNewMesh->SetOrgin(D3DXVECTOR3(2.0f*i-10,0.0f,0.0f));
+	meshes_.Add(*pNewMesh);
+	SAFE_DELETE(pNewMesh);
+	
+	nActiveMesh_ =0;
 }
 
 void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
@@ -222,11 +242,11 @@ void CD3DAppMain::ResizeD3DScene(int width, int height)
 }
 HRESULT CD3DAppMain::ResetDevice()
 {
-	for( int i = 0; i < meshes_.GetSize(); ++i )
+	/*for( int i = 0; i < meshes_.GetSize(); ++i )
 	{
 		meshes_[i].Destroy();
 	}
-	meshes_.RemoveAll();
+	meshes_.RemoveAll();*/
 	// Check device state
 	HRESULT hr = d3ddevice_->TestCooperativeLevel() ;
 	
@@ -258,7 +278,7 @@ HRESULT CD3DAppMain::ResetDevice()
 
 	//if(teapot_==NULL)
 	//	D3DXCreateTeapot(d3ddevice_, &teapot_, 0);
-	CMeshArcBall* pNewMesh;
+	/*CMeshArcBall* pNewMesh;
 	for( int i = 0; i < 10; ++i )
 	{
 		pNewMesh = new CMeshArcBall();
@@ -267,7 +287,7 @@ HRESULT CD3DAppMain::ResetDevice()
 		meshes_.Add(*pNewMesh);
 		SAFE_DELETE(pNewMesh);
 	}
-	nActiveMesh_ = 6;
+	nActiveMesh_ = 6;*/
 	return hr ;
 }
 void CD3DAppMain::FrameMove()

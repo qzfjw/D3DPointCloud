@@ -106,6 +106,7 @@
   <ItemGroup>
     <ClInclude Include="ArcBall.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConfigFormView.h" />
     <ClInclude Include="D3DAppMain.h" />
     <ClInclude Include="D3DPointCloud.h" />
     <ClInclude Include="D3DPointCloudDoc.h" />
@@ -116,12 +117,17 @@
     <ClInclude Include="MeshArcBall.h" />
     <ClInclude Include="PlyMeshArcBall.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="scbarcf.h" />
+    <ClInclude Include="scbarg.h" />
+    <ClInclude Include="sizecbar.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ViewBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArcBall.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConfigFormView.cpp" />
     <ClCompile Include="D3DAppMain.cpp" />
     <ClCompile Include="D3DPointCloud.cpp" />
     <ClCompile Include="D3DPointCloudDoc.cpp" />
@@ -130,10 +136,14 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MeshArcBall.cpp" />
     <ClCompile Include="PlyMeshArcBall.cpp" />
+    <ClCompile Include="scbarcf.cpp" />
+    <ClCompile Include="scbarg.cpp" />
+    <ClCompile Include="sizecbar.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ViewBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="D3DPointCloud.rc" />

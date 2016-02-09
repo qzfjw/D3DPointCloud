@@ -196,7 +196,7 @@ void CD3DAppMain::SetupLight()
 	D3DLIGHT9 pointLight ;
 
 	// Light color
-	D3DXCOLOR color = D3DCOLOR_XRGB(255, 255, 255) ;
+	D3DXCOLOR color = D3DCOLOR_XRGB(0, 0, 255) ;
 
 	// The light position is always same as the camera eye point
 	// so no matter how you rotate the camera, the cube will keep the same brightness
@@ -210,7 +210,7 @@ void CD3DAppMain::SetupLight()
 	pointLight.Diffuse		= color;
 	pointLight.Specular		= color * 0.6f;
 	pointLight.Position		= position;
-	pointLight.Range		= 320.0f;
+	pointLight.Range		= 10320.0f;
 	pointLight.Falloff		= 1.0f;
 	pointLight.Attenuation0	= 1.0f;
 	pointLight.Attenuation1	= 0.0f;

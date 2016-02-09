@@ -5,6 +5,8 @@
 CPlyMeshArcBall::CPlyMeshArcBall(void)
 {
 	m_pVB = NULL;
+	m_pBoundVB = NULL;
+
 	m_pD3DVB = NULL;
 	m_iVertex = 0;
 }
@@ -13,6 +15,7 @@ CPlyMeshArcBall::CPlyMeshArcBall(void)
 CPlyMeshArcBall::~CPlyMeshArcBall(void)
 {
 	SAFE_DELETE(m_pVB);
+	SAFE_DELETE(m_pBoundVB);
 	//SAFE_DELETE(m_pIB);
 	SAFE_RELEASE(m_pD3DVB);
 	//SAFE_RELEASE(m_pD3DIB);
@@ -74,11 +77,14 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 		pVertex++;
 
 	}
-	D3DXVECTOR3 v3max(maxx,maxy,maxz);
-	D3DXVECTOR3 v3min(minx,miny,minz);
+
+	
+	v3max_ = D3DXVECTOR3(maxx,maxy,maxz);
+	v3min_ = D3DXVECTOR3(minx,miny,minz);
 	//D3DXMatrixTranslation(mat,-v3max.x,-v3max.y,-v3max.z);
-	model_orgin_ =(v3max + v3min)/2;
-	D3DXVECTOR3 volume = v3max - v3min;
+	model_orgin_ =(v3max_ + v3min_)/2;
+	//model_orgin_.x +=150;
+	D3DXVECTOR3 volume = v3max_ - v3min_;
 
 	//D3DXVECTOR3 dis(1.0f/(maxx-minx),1.0f/(maxy-miny),1.0f/(maxz-minz));
 	/*double dx=1.0/(maxx-minx),dy=1.0/(maxy-miny),dz=1.0/(maxz-minz);
@@ -95,8 +101,37 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 	
 	m_iVertex = vn;
 	LoadD3D_VB(pd3dDevice);
+	BuildBound();
 	fclose(fp);
 	return 0;
+}
+
+void CPlyMeshArcBall::BuildBound()
+{
+	m_pBoundVB = ( CUSTOM_VERT_POS*)malloc(24*sizeof(CUSTOM_VERT_POS));//read vertex data 
+	CUSTOM_VERT_POS t[8];
+	t[0].z = v3min_.z , t[0].x = v3max_.x , t[0].y = v3max_.y;
+	t[1].z = v3min_.z , t[1].x = v3min_.x , t[1].y = v3max_.y;
+	t[2].z = v3min_.z , t[2].x = v3min_.x , t[2].y = v3min_.y;
+	t[3].z = v3min_.z , t[3].x = v3max_.x , t[3].y = v3min_.y;
+
+	t[4].z = v3max_.z , t[4].x = v3max_.x , t[4].y = v3max_.y;
+	t[5].z = v3max_.z , t[5].x = v3min_.x , t[5].y = v3max_.y;
+	t[6].z = v3max_.z , t[6].x = v3min_.x , t[6].y = v3min_.y;
+	t[7].z = v3max_.z , t[7].x = v3max_.x , t[7].y = v3min_.y;
+	
+	int i=0;
+	m_pBoundVB[i++] = t[0],m_pBoundVB[i++] = t[1],m_pBoundVB[i++] = t[1],m_pBoundVB[i++] = t[2];
+	m_pBoundVB[i++] = t[2],m_pBoundVB[i++] = t[3],m_pBoundVB[i++] = t[3],m_pBoundVB[i++] = t[0];
+
+	m_pBoundVB[i++] = t[4],m_pBoundVB[i++] = t[5],m_pBoundVB[i++] = t[5],m_pBoundVB[i++] = t[6];
+	m_pBoundVB[i++] = t[6],m_pBoundVB[i++] = t[7],m_pBoundVB[i++] = t[7],m_pBoundVB[i++] = t[4];
+
+	m_pBoundVB[i++] = t[0],m_pBoundVB[i++] = t[4],m_pBoundVB[i++] = t[1],m_pBoundVB[i++] = t[5];
+	m_pBoundVB[i++] = t[2],m_pBoundVB[i++] = t[6],m_pBoundVB[i++] = t[3],m_pBoundVB[i++] = t[7];
+
+
+
 }
 const CPlyMeshArcBall& CPlyMeshArcBall::operator=(const CPlyMeshArcBall& rhs)
 {
@@ -122,6 +157,11 @@ const CPlyMeshArcBall& CPlyMeshArcBall::operator=(const CPlyMeshArcBall& rhs)
 		m_pVB = ( CUSTOM_VERT_POS*)malloc(m_iVertex*sizeof(CUSTOM_VERT_POS));//read vertex data 
 		memcpy( m_pVB, rhs.m_pVB,  m_iVertex*sizeof(CUSTOM_VERT_POS) );
 	}
+	if(rhs.m_pBoundVB!=NULL)
+	{
+		m_pBoundVB = ( CUSTOM_VERT_POS*)malloc(24*sizeof(CUSTOM_VERT_POS));//read vertex data 
+		memcpy( m_pBoundVB, rhs.m_pBoundVB,  24*sizeof(CUSTOM_VERT_POS) );
+	}
 
 	
     return *this;
@@ -129,11 +169,14 @@ const CPlyMeshArcBall& CPlyMeshArcBall::operator=(const CPlyMeshArcBall& rhs)
 }
 void CPlyMeshArcBall::Render(LPDIRECT3DDEVICE9 pd3dDevice)
 {
+	
+
 	pd3dDevice->SetTransform(D3DTS_WORLD, &world_matrix_);
 	pd3dDevice->SetStreamSource(0, m_pD3DVB, 0, sizeof(CUSTOM_VERT_POS));
 	pd3dDevice->SetIndices(NULL);
 	pd3dDevice->SetFVF(D3D_FVF_CUSTOMVERTEX_POS);
 	pd3dDevice->DrawPrimitive(D3DPT_POINTLIST,0, m_iVertex);
+	pd3dDevice->DrawPrimitiveUP(D3DPT_LINELIST,12,m_pBoundVB,sizeof(CUSTOM_VERT_POS));
 	//m_pDevice->SetRenderState( D3DRS_CULLMODE,   D3DCULL_NONE);
 	//pD3DDevice->SetIndices(g_pIB);
 	//pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, g_iNumRows*g_iNumCols, 0, (g_iNumRows-1)*(g_iNumCols-1)*2)))

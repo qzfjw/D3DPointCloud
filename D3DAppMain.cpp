@@ -144,7 +144,10 @@ void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
 
 	// Clear the back buffer to a black color
 	d3ddevice_->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x4F94CD, 1.0f, 0);
+	d3ddevice_->SetRenderState(D3DRS_CULLMODE,D3DCULL_NONE);
+	
 
+	
 	if( SUCCEEDED(d3ddevice_->BeginScene()))
 	{
 		
@@ -248,6 +251,8 @@ HRESULT CD3DAppMain::ResetDevice()
 	}
 	meshes_.RemoveAll();*/
 	// Check device state
+	if(d3ddevice_ == NULL)
+		return S_OK;
 	HRESULT hr = d3ddevice_->TestCooperativeLevel() ;
 	
 	// Device can be reset now

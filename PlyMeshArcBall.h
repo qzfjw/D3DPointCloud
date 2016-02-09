@@ -24,6 +24,7 @@ public:
 public:
 	HRESULT Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice );
 	void Render(LPDIRECT3DDEVICE9 pd3dDevice);
+	void BuildBound();
 private:
 	int	  ReadLine(FILE*fp,char*buf);
 	long  ReadVertexCount(FILE *fp);
@@ -37,6 +38,7 @@ protected:
 	//short int *m_pIB;
 	LPDIRECT3DVERTEXBUFFER9 m_pD3DVB;
 	//LPDIRECT3DINDEXBUFFER9  m_pD3DIB;
+	CUSTOM_VERT_POS *m_pBoundVB;
 
 };
 

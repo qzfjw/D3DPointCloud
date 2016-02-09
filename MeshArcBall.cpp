@@ -3,9 +3,11 @@
 
 CMeshArcBall::CMeshArcBall()
 	:frame_need_update_(false),
-	 model_scal_factor_(1.0f),
+	 model_scal_factor_(1.5f),
 	 model_orgin_(0.0f,0.0f,0.0f),
 	 model_volume_(0.0f,0.0f,0.0f),
+	 v3min_(0.0f,0.0f,0.0f),
+	 v3max_(0.0f,0.0f,0.0f),
 	 p_model_mesh_(NULL)
 {
 	//d3ddevice_ = pd3dDevice;
@@ -42,7 +44,7 @@ HRESULT CMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice 
 {
 	Reset();
 	wcscpy_s( wszFile_, MAX_PATH, wszFileName);
-	D3DXCreateTeapot(pd3dDevice, &p_model_mesh_, 0);
+	//D3DXCreateTeapot(pd3dDevice, &p_model_mesh_, 0);
 	return S_OK;
 
 }
@@ -71,15 +73,18 @@ void CMeshArcBall::OnFrameMove()
 	//	return ;
 	frame_need_update_ = false ;
 	// Get the inverse of the view Arcball's rotation matrix
-	D3DXMATRIX rotate_matrix = *world_arcball_.GetRotationMatrix();
-	D3DXMATRIX scalmat,mt;
-	D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);
-	D3DXMatrixScaling(&scalmat,model_scal_factor_,model_scal_factor_,model_scal_factor_);
+	//D3DXMATRIX rotate_matrix = *world_arcball_.GetRotationMatrix();
+	D3DXMATRIX mt;
+	D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);//set model center as orgin
+	D3DXMatrixMultiply(&world_matrix_,world_arcball_.GetRotationMatrix(),&mt); //roatated with the orgin
+	D3DXMatrixTranslation(&mt,-model_orgin_.x,-model_orgin_.y,-model_orgin_.z); //
+	D3DXMatrixMultiply(&world_matrix_,&mt,&world_matrix_);
+	D3DXMatrixScaling(&mt,model_scal_factor_,model_scal_factor_,model_scal_factor_);
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
 
+	D3DXMatrixTranslation(&mt,0.0f,0.0f,-422.0f);//
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
 	
-	D3DXMatrixMultiply(&world_matrix_,&scalmat,&mt);
-	D3DXMatrixMultiply(&world_matrix_,&rotate_matrix,&world_matrix_);
-
 
 	
 }

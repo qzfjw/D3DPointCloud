@@ -33,6 +33,9 @@ protected:
 	float 	model_scal_factor_;		// Scale factor  of modle(+/-)
 	D3DXVECTOR3  model_orgin_;
 	D3DXVECTOR3  model_volume_;
+	D3DXVECTOR3 v3min_;
+	D3DXVECTOR3 v3max_;
+
 	
 	D3DXMATRIX world_matrix_ ;			// World matrix of model
 	ArcBall world_arcball_ ;			// Model arc ball

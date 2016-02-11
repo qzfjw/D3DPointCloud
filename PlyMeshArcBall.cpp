@@ -83,8 +83,14 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 	v3min_ = D3DXVECTOR3(minx,miny,minz);
 	//D3DXMatrixTranslation(mat,-v3max.x,-v3max.y,-v3max.z);
 	model_orgin_ =(v3max_ + v3min_)/2;
+	v3pos_ = model_orgin_;
+	if(v3pos_.z < 0)
+		v3pos_.z = -v3pos_.z;
+	if(v3pos_.z > 10.0f)
+		v3pos_.z = -v3pos_.z;
 	//model_orgin_.x +=150;
 	D3DXVECTOR3 volume = v3max_ - v3min_;
+	
 
 	
 	m_iVertex = vn;

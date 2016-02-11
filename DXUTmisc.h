@@ -1,17 +1,24 @@
 #pragma once
 // Standard Windows includes
+#include "afxtempl.h"
+//#include <Windows.h>
 //#include <initguid.h>
 #include <assert.h>
 #include <WinError.h>
+
+
+//#include <WinDef.h>
 //#include <wchar.h>
 //#include <mmsystem.h>
 //#include <commctrl.h> // for InitCommonControls() 
 //#include <shellapi.h> // for ExtractIcon()
 //#include <new.h>      // for placement new
 //#include <shlobj.h>
-#include <stdlib.h>      
-#include <limits.h>      
-#include <stdio.h>
+
+
+#include <cstdlib>      
+#include <climits>      
+#include <cstdio>
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }

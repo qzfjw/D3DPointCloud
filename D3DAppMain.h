@@ -22,6 +22,7 @@ public:
 	void ResizeD3DScene(int width, int height);
 	HRESULT ResetDevice();
 	void ToggleFullScreen();
+	void SetColor(D3DXCOLOR color);
 	void SetupLight();
 	void SetupMatrix();
 	void FrameMove();
@@ -33,6 +34,8 @@ private:
 	LPDIRECT3D9				d3d_;			// Direct3D object
 	LPDIRECT3DDEVICE9		d3ddevice_;		// D3D9 Device
 	D3DPRESENT_PARAMETERS	d3dpp_;			// D3D presentation parameters
+
+	D3DLIGHT9 pointLight_ ;
 
 	HWND hWnd_;				// Handle of game window
 	WINDOWPLACEMENT wp_ ;		// Window position and size
@@ -52,12 +55,11 @@ private:
 	Camera*					camera;			// Model-view camera
 	
 private:
-	ID3DXMesh* teapot_;
+	//ID3DXMesh* teapot_;
 	//CMeshArcBall* pMeshArcBall_;
 	
-	int nActiveMesh_;
-	//CGrowableArray <CMeshArcBall> meshes_;           // List of meshes being rendered
-	CGrowableArray <CPlyMeshArcBall> meshes_;           // List of meshes being rendered
+	//int nActiveMesh_;
+	//CGrowableArray <CPlyMeshArcBall> meshes_;           // List of meshes being rendered
 	
 };
 

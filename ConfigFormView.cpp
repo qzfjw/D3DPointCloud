@@ -18,6 +18,9 @@ CConfigFormView::CConfigFormView()
 
 CConfigFormView::~CConfigFormView()
 {
+	SAFE_DELETE(m_pPageLayout);
+	SAFE_DELETE(m_pPropSheet);
+	
 }
 
 void CConfigFormView::DoDataExchange(CDataExchange* pDX)

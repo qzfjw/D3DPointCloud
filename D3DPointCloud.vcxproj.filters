@@ -93,6 +93,9 @@
     <ClInclude Include="PointCloudPageLayout.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalVariable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DPointCloud.cpp">
@@ -144,6 +147,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PointCloudPageLayout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalVariable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

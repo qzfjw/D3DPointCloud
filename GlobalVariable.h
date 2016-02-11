@@ -1,0 +1,30 @@
+#pragma once
+#include "PlyMeshArcBall.h"
+class CGlobalVariable
+{
+public:
+	CGlobalVariable(void);
+	virtual ~CGlobalVariable(void);
+	
+public:
+	int nActiveMesh_;
+	CGrowableArray <CPlyMeshArcBall> meshes_;           // List of meshes being rendered
+	// 增加或减少的量
+	float m_edtModelStep;
+	// X坐标值
+	float m_edtModel_X;
+	// Y坐标值
+	float m_edtModel_Y;
+	// Z坐标值
+	float m_edtModel_Z;
+	// 是否选中X轴
+	BOOL m_chkX;
+	// 是否选中Y轴
+	BOOL m_chkY;
+	// 是否选中Z轴
+	BOOL m_chkZ;
+
+	IDirect3DDevice9*pd3dDevice;
+	
+};
+

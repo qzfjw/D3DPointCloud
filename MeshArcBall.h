@@ -24,6 +24,10 @@ public:
 	{
 		v3pos_ = p;
 	}
+	D3DXVECTOR3 GetPos()
+	{
+		return v3pos_;
+	}
 	void SetScale(float f)
 	{
 		model_scal_factor_ = f;

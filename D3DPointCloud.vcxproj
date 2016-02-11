@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Program Files\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -112,6 +112,7 @@
     <ClInclude Include="D3DPointCloudDoc.h" />
     <ClInclude Include="D3DPointCloudView.h" />
     <ClInclude Include="DXUTmisc.h" />
+    <ClInclude Include="GlobalVariable.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MeshArcBall.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="D3DPointCloudDoc.cpp" />
     <ClCompile Include="D3DPointCloudView.cpp" />
     <ClCompile Include="DXUTmisc.cpp" />
+    <ClCompile Include="GlobalVariable.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MeshArcBall.cpp" />
     <ClCompile Include="PlyMeshArcBall.cpp" />

@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "D3DAppMain.h"
 
+#include "GlobalVariable.h"
+CGlobalVariable gGlobalPara;
+
 CD3DAppMain::CD3DAppMain(void)
     : d3d_(NULL),
 	  d3ddevice_(NULL),
@@ -10,12 +13,12 @@ CD3DAppMain::CD3DAppMain(void)
 	  last_window_width_(0),
 	  last_window_height_(0),
 	  screen_width_(0),
-	  screen_height_(0),
-	  nActiveMesh_(0)
+	  screen_height_(0)
+	  //nActiveMesh_(0)
 {
 	camera = new Camera();
-	teapot_ = NULL;
-	meshes_.RemoveAll();
+	//teapot_ = NULL;
+	//gGlobalPara.meshes_.RemoveAll();
 	//pMeshArcBall_ = NULL;
 	
 	
@@ -28,9 +31,9 @@ CD3DAppMain::~CD3DAppMain(void)
 	//SAFE_DELETE(pMeshArcBall_);
 	//SAFE_RELEASE(teapot_);
 		
-    for( int i = 0; i < meshes_.GetSize(); ++i )
-       meshes_[i].Destroy();
-    meshes_.RemoveAll();
+    for( int i = 0; i < gGlobalPara.meshes_.GetSize(); ++i )
+       gGlobalPara.meshes_[i].Destroy();
+    gGlobalPara.meshes_.RemoveAll();
 	// Release Direct3D Device
 	SAFE_RELEASE(d3ddevice_);
 	
@@ -111,7 +114,7 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	{
 		MessageBox(hWnd, L"Create Direct3D9 device failed!", L"error!", 0) ;
 	}
-
+	
 	// Setup view matrix
 	D3DXVECTOR3 vecEye(0.0f, 0.0f, -1.0f);
 	D3DXVECTOR3 vecAt (0.0f, 0.0f, 0.0f);
@@ -122,8 +125,8 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	float aspectRatio = (float)d3dpp_.BackBufferWidth / (float)d3dpp_.BackBufferHeight ;
 	camera->SetProjParams(D3DX_PI /4, aspectRatio, 1.0f,1000.0f) ;
 
-	ResetDevice();
-
+	//ResetDevice();
+	gGlobalPara.pd3dDevice = d3ddevice_;
 	
 	/*CMeshArcBall* pNewMesh;
 	for( int i = 0; i < 10; ++i )
@@ -135,7 +138,8 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 		SAFE_DELETE(pNewMesh);
 	}
 	nActiveMesh_ = 6;*/
-	CPlyMeshArcBall* pNewMesh;
+
+	/*CPlyMeshArcBall* pNewMesh;
 
 	pNewMesh = new CPlyMeshArcBall();
 	pNewMesh->Create(L"media\\LUNGU5.ply",d3ddevice_);
@@ -150,7 +154,7 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	meshes_.Add(*pNewMesh);
 	SAFE_DELETE(pNewMesh);
 	
-	nActiveMesh_ =0;
+	nActiveMesh_ =0;*/
 }
 
 void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
@@ -180,10 +184,19 @@ void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
 		//	teapot_->DrawSubset(0);
 		//pMeshArcBall_->Render();
 
-		for( int i = 0; i < meshes_.GetSize(); ++i )
+		for( int i = 0; i < gGlobalPara.meshes_.GetSize(); ++i )
 		{
-			
-			 meshes_[i].Render(d3ddevice_);
+			if(i==gGlobalPara.nActiveMesh_)
+			{
+				SetColor(D3DCOLOR_XRGB(255, 0, 0));
+				
+			}
+			else
+			{
+				SetupLight();
+
+			}
+			gGlobalPara.meshes_[i].Render(d3ddevice_);
 			 //CMeshArcBall temp = meshes_[i];
 			 //temp.Render(d3ddevice_);
 		}
@@ -210,11 +223,26 @@ void CD3DAppMain::SetupMatrix()
 	D3DXMATRIX matProj = camera->GetProjMatrix() ;
 	d3ddevice_->SetTransform(D3DTS_PROJECTION, &matProj) ;
 }
+
+void CD3DAppMain::SetColor(D3DXCOLOR color)
+{
+	// Light attributes
+	pointLight_.Ambient		= color * 0.6f;
+	pointLight_.Diffuse		= color;
+	pointLight_.Specular		= color * 0.6f;
+	pointLight_.Range		= 10320.0f;
+	pointLight_.Falloff		= 1.0f;
+	pointLight_.Attenuation0	= 1.0f;
+	pointLight_.Attenuation1	= 0.0f;
+	pointLight_.Attenuation2	= 0.0f;
+	d3ddevice_->SetLight(0, &pointLight_) ;
+	d3ddevice_->LightEnable(0, true) ;	
+	
+}
 void CD3DAppMain::SetupLight()
 {
 	// Create light
-	D3DLIGHT9 pointLight ;
-
+	
 	// Light color
 	D3DXCOLOR color = D3DCOLOR_XRGB(0, 0, 255) ;
 
@@ -223,18 +251,18 @@ void CD3DAppMain::SetupLight()
 	 D3DXVECTOR3 position = camera->GetEyePoint() ;
 
 	// Light type, we use point light here
-	pointLight.Type			= D3DLIGHT_POINT ;
+	pointLight_.Type			= D3DLIGHT_POINT ;
 
 	// Light attributes
-	pointLight.Ambient		= color * 0.6f;
-	pointLight.Diffuse		= color;
-	pointLight.Specular		= color * 0.6f;
-	pointLight.Position		= position;
-	pointLight.Range		= 10320.0f;
-	pointLight.Falloff		= 1.0f;
-	pointLight.Attenuation0	= 1.0f;
-	pointLight.Attenuation1	= 0.0f;
-	pointLight.Attenuation2	= 0.0f;
+	pointLight_.Ambient		= color * 0.6f;
+	pointLight_.Diffuse		= color;
+	pointLight_.Specular		= color * 0.6f;
+	pointLight_.Position		= position;
+	pointLight_.Range		= 10320.0f;
+	pointLight_.Falloff		= 1.0f;
+	pointLight_.Attenuation0	= 1.0f;
+	pointLight_.Attenuation1	= 0.0f;
+	pointLight_.Attenuation2	= 0.0f;
 
 	// Set material
 	D3DMATERIAL9 material ;
@@ -246,7 +274,7 @@ void CD3DAppMain::SetupLight()
 	d3ddevice_->SetMaterial(&material) ;
 
 	// Enable light
-	d3ddevice_->SetLight(0, &pointLight) ;		
+	d3ddevice_->SetLight(0, &pointLight_) ;		
 	d3ddevice_->LightEnable(0, true) ;		
 }
 
@@ -313,15 +341,16 @@ HRESULT CD3DAppMain::ResetDevice()
 		SAFE_DELETE(pNewMesh);
 	}
 	nActiveMesh_ = 6;*/
+	
 	return hr ;
 }
 void CD3DAppMain::FrameMove()
 {
 	camera->OnFrameMove() ;
 	//pMeshArcBall_->OnFrameMove();
-	for( int i = 0; i < meshes_.GetSize(); ++i )
+	for( int i = 0; i < gGlobalPara.meshes_.GetSize(); ++i )
 	{
-		meshes_[i].OnFrameMove();
+		gGlobalPara.meshes_[i].OnFrameMove();
 	}
 }
 // Calculate the picking ray and transform it to model space 
@@ -512,8 +541,8 @@ LRESULT CD3DAppMain::HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 	}
 
 	HRESULT hr = camera->HandleMessages(hWnd, uMsg, wParam, lParam);
-	if( meshes_.GetSize() > 0 )
-        hr = meshes_[nActiveMesh_].HandleMessages( hWnd, uMsg, wParam, lParam);
+	if( gGlobalPara.meshes_.GetSize() > 0 )
+        hr = gGlobalPara.meshes_[gGlobalPara.nActiveMesh_].HandleMessages( hWnd, uMsg, wParam, lParam);
 	 //hr = meshes_[1].HandleMessages( hWnd, uMsg, wParam, lParam);
 	//return pMeshArcBall_->HandleMessages(hWnd, uMsg, wParam, lParam);
 	 return hr;

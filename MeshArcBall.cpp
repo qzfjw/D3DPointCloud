@@ -8,6 +8,7 @@ CMeshArcBall::CMeshArcBall()
 	 model_volume_(0.0f,0.0f,0.0f),
 	 v3min_(0.0f,0.0f,0.0f),
 	 v3max_(0.0f,0.0f,0.0f),
+	 v3pos_(0.0f,0.0f,0.0f),
 	 p_model_mesh_(NULL)
 {
 	//d3ddevice_ = pd3dDevice;
@@ -73,7 +74,6 @@ void CMeshArcBall::OnFrameMove()
 	//	return ;
 	frame_need_update_ = false ;
 	// Get the inverse of the view Arcball's rotation matrix
-	//D3DXMATRIX rotate_matrix = *world_arcball_.GetRotationMatrix();
 	D3DXMATRIX mt;
 	D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);//set model center as orgin
 	D3DXMatrixMultiply(&world_matrix_,world_arcball_.GetRotationMatrix(),&mt); //roatated with the orgin
@@ -82,7 +82,7 @@ void CMeshArcBall::OnFrameMove()
 	D3DXMatrixScaling(&mt,model_scal_factor_,model_scal_factor_,model_scal_factor_);
 	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
 
-	D3DXMatrixTranslation(&mt,0.0f,0.0f,-422.0f);//
+	D3DXMatrixTranslation(&mt,v3pos_.x,v3pos_.y,v3pos_.z);//0.0f,0.0f,-422.0f);//
 	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
 	
 

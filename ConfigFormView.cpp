@@ -26,6 +26,7 @@ void CConfigFormView::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CConfigFormView, CFormView)
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -47,3 +48,29 @@ void CConfigFormView::Dump(CDumpContext& dc) const
 
 
 // CConfigFormView 消息处理程序
+
+
+int CConfigFormView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CFormView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+	m_pPageLayout = new CPointCloudPageLayout;
+   
+
+	m_pPropSheet = new CPropertySheet; //CSnapPropertySheet;
+	m_pPropSheet->AddPage(m_pPageLayout);
+	
+	// create a modeless property page
+	if (!m_pPropSheet->Create(this,DS_CONTEXTHELP | DS_SETFONT | WS_CHILD | WS_VISIBLE))
+	{
+		DestroyWindow();
+		return FALSE;
+	}
+
+	m_pPropSheet->SetWindowPos(NULL, 0, 0, 0, 0,
+		SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
+
+	return 0;
+}

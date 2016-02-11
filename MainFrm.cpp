@@ -90,10 +90,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndMyBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndMyBar, AFX_IDW_DOCKBAR_RIGHT);//_RIGHT
-	
-	
 
-
+	ShowControlBar(&m_wndMyBar, FALSE, FALSE);
+	
 	return 0;
 }
 

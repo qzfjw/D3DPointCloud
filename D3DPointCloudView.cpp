@@ -130,7 +130,7 @@ void CD3DPointCloudView::OnInitialUpdate()
 	//	::MessageBox(0,L"setup() - Failed", 0,0);
 	//	::PostQuitMessage(0);
 	//}
-	d3dapp->InitD3D9(AfxGetMainWnd()->m_hWnd);//GetSafeHwnd());
+	d3dapp->InitD3D9(GetSafeHwnd());//AfxGetMainWnd()->m_hWnd;
 }
 
 

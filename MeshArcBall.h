@@ -20,6 +20,15 @@ public:
 	{
 		model_orgin_ = org;
 	}
+	void SetPos(D3DXVECTOR3 p)
+	{
+		v3pos_ = p;
+	}
+	void SetScale(float f)
+	{
+		model_scal_factor_ = f;
+
+	}
 	const CMeshArcBall& operator=( const CMeshArcBall& rhs );
    
 	
@@ -35,6 +44,7 @@ protected:
 	D3DXVECTOR3  model_volume_;
 	D3DXVECTOR3 v3min_;
 	D3DXVECTOR3 v3max_;
+	D3DXVECTOR3 v3pos_;
 
 	
 	D3DXMATRIX world_matrix_ ;			// World matrix of model

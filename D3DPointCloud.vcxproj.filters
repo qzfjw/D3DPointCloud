@@ -90,6 +90,9 @@
     <ClInclude Include="ConfigFormView.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PointCloudPageLayout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DPointCloud.cpp">
@@ -138,6 +141,9 @@
       <Filter>ViewBar</Filter>
     </ClCompile>
     <ClCompile Include="ConfigFormView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCloudPageLayout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

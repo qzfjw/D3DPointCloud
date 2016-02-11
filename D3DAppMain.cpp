@@ -17,7 +17,7 @@ CD3DAppMain::CD3DAppMain(void)
 	teapot_ = NULL;
 	meshes_.RemoveAll();
 	//pMeshArcBall_ = NULL;
-	//meshes_.
+	
 	
 
 }
@@ -26,10 +26,8 @@ CD3DAppMain::~CD3DAppMain(void)
 {
 	SAFE_DELETE(camera);
 	//SAFE_DELETE(pMeshArcBall_);
-	
 	//SAFE_RELEASE(teapot_);
-	
-	
+		
     for( int i = 0; i < meshes_.GetSize(); ++i )
        meshes_[i].Destroy();
     meshes_.RemoveAll();
@@ -49,6 +47,17 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	// Create the D3D object.
 	if( NULL == ( d3d_ = Direct3DCreate9( D3D_SDK_VERSION ) ) )
 		MessageBox(hWnd, L"Create Direct3D9 failed!", L"error!", 0) ;
+
+	// Step 2: Check for hardware vp.
+
+	//D3DCAPS9 caps;
+	//d3d_->GetDeviceCaps(D3DADAPTER_DEFAULT, deviceType, &caps);
+
+	//int vp = 0;
+	//if( caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT )
+	//	vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+	//else
+	//	vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
 	ZeroMemory( &d3dpp_, sizeof(d3dpp_) );
 
@@ -87,13 +96,16 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	d3dpp_.BackBufferCount           = 1;
 	d3dpp_.BackBufferFormat			= D3DFMT_X8R8G8B8;
 	d3dpp_.EnableAutoDepthStencil	= TRUE ;
-	d3dpp_.AutoDepthStencilFormat	= D3DFMT_D16 ;
+	d3dpp_.AutoDepthStencilFormat	= D3DFMT_D24S8;//D3DFMT_D16 ;
 	
+	d3dpp_.Flags                      = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER ;//0;
+	d3dpp_.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	d3dpp_.PresentationInterval       = D3DPRESENT_INTERVAL_IMMEDIATE;
 	// Create the D3DDevice
 	HRESULT hr = d3d_->CreateDevice(D3DADAPTER_DEFAULT, 
 		D3DDEVTYPE_HAL, 
 		hWnd,
-		D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
 		&d3dpp_, &d3ddevice_ );
 	if(FAILED(hr))
 	{
@@ -124,9 +136,17 @@ void CD3DAppMain::InitD3D9(HWND hWnd)
 	}
 	nActiveMesh_ = 6;*/
 	CPlyMeshArcBall* pNewMesh;
+
 	pNewMesh = new CPlyMeshArcBall();
 	pNewMesh->Create(L"media\\LUNGU5.ply",d3ddevice_);
-	//pNewMesh->SetOrgin(D3DXVECTOR3(2.0f*i-10,0.0f,0.0f));
+	pNewMesh->SetPos(D3DXVECTOR3(0.0f,0.0f,-422.0f));
+	meshes_.Add(*pNewMesh);
+
+	SAFE_DELETE(pNewMesh);
+
+	pNewMesh = new CPlyMeshArcBall();
+	pNewMesh->Create(L"media\\LUNGU6.ply",d3ddevice_);
+	pNewMesh->SetPos(D3DXVECTOR3(-20.0f,0.0f,-422.0f));
 	meshes_.Add(*pNewMesh);
 	SAFE_DELETE(pNewMesh);
 	
@@ -420,7 +440,7 @@ LRESULT CD3DAppMain::HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			break ;
 		case WM_KEYDOWN:
 			{
-				switch( wParam )
+				/*switch( wParam )
 				{
 					case 'F':
 						ToggleFullScreen() ;
@@ -430,55 +450,59 @@ LRESULT CD3DAppMain::HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 						break ;
 					default:
 						break ;
-				}
+				}*/
 			}
 			break ;
 
 		case WM_SIZE: // why not use WM_EXITSIZEMOVE?
 		{
-			if (wParam == SIZE_MAXIMIZED)
-			{
-				// Get current window size
-				current_window_width_ = ( short )LOWORD( lParam );
-				current_window_height_ = ( short )HIWORD( lParam );
+			current_window_width_ = ( short )LOWORD( lParam );
+			current_window_height_ = ( short )HIWORD( lParam );
+			d3dpp_.BackBufferWidth = current_window_width_;
+			d3dpp_.BackBufferHeight = current_window_height_;
+			ResetDevice();
+			//if (wParam == SIZE_MAXIMIZED)
+			//{
+			//	// Get current window size
+			//	current_window_width_ = ( short )LOWORD( lParam );
+			//	current_window_height_ = ( short )HIWORD( lParam );
 
-				if(current_window_width_ != last_window_width_ || current_window_height_ != last_window_height_)
-				{
-					d3dpp_.BackBufferWidth = current_window_width_;
-					d3dpp_.BackBufferHeight = current_window_height_;
-					ResetDevice();
-					last_window_width_ = current_window_width_ ;
-					last_window_height_ = current_window_height_ ;
-				}
-			}
+			//	if(current_window_width_ != last_window_width_ || current_window_height_ != last_window_height_)
+			//	{
+			//		d3dpp_.BackBufferWidth = current_window_width_;
+			//		d3dpp_.BackBufferHeight = current_window_height_;
+			//		ResetDevice();
+			//		last_window_width_ = current_window_width_ ;
+			//		last_window_height_ = current_window_height_ ;
+			//	}
+			//}
+			//else if (wParam == SIZE_RESTORED)
+			//{
+			//	
+			//	// Maximized -> Full Screen
+			//	if (is_fullscreen_)
+			//	{
+			//		// Update back buffer to desktop resolution
+			//		d3dpp_.BackBufferWidth  = screen_width_;  
+			//		d3dpp_.BackBufferHeight = screen_height_;
 
-			else if (wParam == SIZE_RESTORED)
-			{
-				
-				// Maximized -> Full Screen
-				if (is_fullscreen_)
-				{
-					// Update back buffer to desktop resolution
-					d3dpp_.BackBufferWidth  = screen_width_;  
-					d3dpp_.BackBufferHeight = screen_height_;
+			//		// Reset device
+			//		ResetDevice();
+			//	}
+			//	else
+			//	{
+			//		// Get current window size
+			//		current_window_width_ = ( short )LOWORD( lParam );
+			//		current_window_height_ = ( short )HIWORD( lParam );
 
-					// Reset device
-					ResetDevice();
-				}
-				else
-				{
-					// Get current window size
-					current_window_width_ = ( short )LOWORD( lParam );
-					current_window_height_ = ( short )HIWORD( lParam );
-
-					// Reset device
-					d3dpp_.BackBufferWidth = current_window_width_;
-					d3dpp_.BackBufferHeight = current_window_height_;
-					ResetDevice();
-					last_window_width_ = current_window_width_ ;
-					last_window_height_ = current_window_height_ ;
-				}
-			}
+			//		// Reset device
+			//		d3dpp_.BackBufferWidth = current_window_width_;
+			//		d3dpp_.BackBufferHeight = current_window_height_;
+			//		ResetDevice();
+			//		last_window_width_ = current_window_width_ ;
+			//		last_window_height_ = current_window_height_ ;
+			//	}
+			//}
 		}
 		break ;
 		case WM_CLOSE:

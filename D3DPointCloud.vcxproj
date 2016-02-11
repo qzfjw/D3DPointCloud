@@ -116,6 +116,7 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="MeshArcBall.h" />
     <ClInclude Include="PlyMeshArcBall.h" />
+    <ClInclude Include="PointCloudPageLayout.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="scbarcf.h" />
     <ClInclude Include="scbarg.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MeshArcBall.cpp" />
     <ClCompile Include="PlyMeshArcBall.cpp" />
+    <ClCompile Include="PointCloudPageLayout.cpp" />
     <ClCompile Include="scbarcf.cpp" />
     <ClCompile Include="scbarg.cpp" />
     <ClCompile Include="sizecbar.cpp" />

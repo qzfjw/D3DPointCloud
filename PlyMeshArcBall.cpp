@@ -86,18 +86,6 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 	//model_orgin_.x +=150;
 	D3DXVECTOR3 volume = v3max_ - v3min_;
 
-	//D3DXVECTOR3 dis(1.0f/(maxx-minx),1.0f/(maxy-miny),1.0f/(maxz-minz));
-	/*double dx=1.0/(maxx-minx),dy=1.0/(maxy-miny),dz=1.0/(maxz-minz);
-
-
-	pVertex=m_pVB;
-	for(long i=0; i<vn; i++)
-	{
-		pVertex->x = -1.0f + (pVertex->x - minx)*dx*2.0;
-		pVertex->y = -1.0f + (pVertex->y - miny)*dy*2.0;
-		pVertex->z = -1.0f + (pVertex->z - minz)*dz*2.0;
-		pVertex++;
-	}*/
 	
 	m_iVertex = vn;
 	LoadD3D_VB(pd3dDevice);
@@ -145,6 +133,7 @@ const CPlyMeshArcBall& CPlyMeshArcBall::operator=(const CPlyMeshArcBall& rhs)
 	model_volume_= rhs.model_volume_;
 	world_matrix_ = rhs.world_matrix_;
 	world_arcball_ = rhs.world_arcball_;
+	v3pos_ = rhs.v3pos_;
 		
     SAFE_RELEASE(p_model_mesh_);
 	if( (p_model_mesh_ = rhs.p_model_mesh_ ) != 0 ) p_model_mesh_->AddRef();

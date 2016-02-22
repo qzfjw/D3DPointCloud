@@ -130,6 +130,7 @@ void CD3DPointCloudView::OnInitialUpdate()
 	//	::MessageBox(0,L"setup() - Failed", 0,0);
 	//	::PostQuitMessage(0);
 	//}
+
 	d3dapp->InitD3D9(GetSafeHwnd());//AfxGetMainWnd()->m_hWnd;
 }
 
@@ -161,6 +162,7 @@ LRESULT CD3DPointCloudView::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 {
 	// TODO: 在此添加专用代码和/或调用基类
 	//d3dapp->InitD3D9(GetSafeHwnd());
+	
 	d3dapp->HandleMessages(GetSafeHwnd(),message,wParam,lParam);
 	return CView::WindowProc(message, wParam, lParam);
 }

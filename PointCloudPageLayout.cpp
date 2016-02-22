@@ -22,6 +22,8 @@ CPointCloudPageLayout::CPointCloudPageLayout()
 	, m_chkX(TRUE)
 	, m_chkY(FALSE)
 	, m_chkZ(FALSE)
+	//, m_lVertexCount(0)
+	, m_iVertexCount(0)
 {
 	m_edtModelStep = gGlobalPara.m_edtModelStep;
 	m_edtModel_X = gGlobalPara.m_edtModel_X;
@@ -55,7 +57,11 @@ void CPointCloudPageLayout::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_X, m_chkX);
 	DDX_Check(pDX, IDC_CHECK_Y, m_chkY);
 	DDX_Check(pDX, IDC_CHECK_Z, m_chkZ);
+	DDX_Text(pDX, IDC_EDTVERTEXCOUNT, m_iVertexCount);
 	DDX_Control(pDX, IDC_COMBO_FILELIST, m_cboFileList);
+	DDX_Control(pDX, IDC_DISPLAYTRANFORMATIONS, m_lstDisplay);
+	
+	
 }
 
 
@@ -69,6 +75,7 @@ BEGIN_MESSAGE_MAP(CPointCloudPageLayout, CPropertyPage)
 	ON_BN_CLICKED(IDC_LOADMODEL, &CPointCloudPageLayout::OnBnClickedLoadmodel)
 	ON_CBN_SELCHANGE(IDC_COMBO_FILELIST, &CPointCloudPageLayout::OnCbnSelchangeComboFilelist)
 	ON_BN_CLICKED(IDC_REMOVEMODEL, &CPointCloudPageLayout::OnBnClickedRemovemodel)
+	ON_BN_CLICKED(IDC_RIGIDTRANSFORMATION, &CPointCloudPageLayout::OnBnClickedRigidtransformation)
 END_MESSAGE_MAP()
 
 
@@ -141,8 +148,8 @@ void CPointCloudPageLayout::OnBnClickedLoadmodel()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	WCHAR filename[120];
-	WCHAR szFilters[]=L"ply(*.ply)|*.ply";
-	CFileDialog opendlg(TRUE, L"ply",L"PointCloud",OFN_FILEMUSTEXIST| OFN_HIDEREADONLY, szFilters,this);
+	WCHAR szFilters[]=L"all files(*.*)|*.*|ply(*.ply)|*.ply|obj(*.obj)|*.obj||";
+	CFileDialog opendlg(TRUE, L"*.*",L"PointCloud",OFN_FILEMUSTEXIST| OFN_HIDEREADONLY, szFilters,this);
 	opendlg.m_pOFN->lpstrTitle = L"Open a model file";
 
 	opendlg.m_ofn.lpstrInitialDir=L"F:\\Visual Studio Projects\\D3DPointCloud\\media"; //设置当前路径
@@ -162,6 +169,7 @@ void CPointCloudPageLayout::OnBnClickedLoadmodel()
 		gGlobalPara.m_edtModel_X = pNewMesh->GetPos().x;
 		gGlobalPara.m_edtModel_Y = pNewMesh->GetPos().y;
 		gGlobalPara.m_edtModel_Z = pNewMesh->GetPos().z;
+		m_iVertexCount = pNewMesh->GetSize();
 		UpdateDataFromGlobal();
 
 	}
@@ -175,6 +183,7 @@ void CPointCloudPageLayout::OnBnClickedLoadmodel()
 		gGlobalPara.m_edtModel_X = pNewMesh->GetPos().x;
 		gGlobalPara.m_edtModel_Y = pNewMesh->GetPos().y;
 		gGlobalPara.m_edtModel_Z = pNewMesh->GetPos().z;
+		m_iVertexCount = pNewMesh->GetSize();
 		UpdateDataFromGlobal();
 		SAFE_DELETE(pNewMesh);
 	}
@@ -220,4 +229,40 @@ void CPointCloudPageLayout::OnBnClickedRemovemodel()
 	gGlobalPara.m_edtModel_Y = pNewMesh->GetPos().y;
 	gGlobalPara.m_edtModel_Z = pNewMesh->GetPos().z;
 	UpdateDataFromGlobal();
+}
+
+
+void CPointCloudPageLayout::OnBnClickedRigidtransformation()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//if(gGlobalPara.meshes_.GetSize()>1)
+	{
+		int to = gGlobalPara.nActiveMesh_;
+		int from = (to + 1) % gGlobalPara.meshes_.GetSize();
+		WCHAR str[200];
+		//swprintf(str,L"Hello,world.\n%d",s);
+		//m_lstDisplay.AddString(str);
+		D3DXMATRIX mat;
+		
+		
+		m_lstDisplay.AddString(L"正在计算中......");
+		long t1=GetTickCount();//开始时间(ms) 
+		bool converged = gGlobalPara.ComputeRigidTranformation(from,to,&mat);
+		long t2=GetTickCount();//结束时间(ms)         
+		m_lstDisplay.AddString(L"计算完成.");
+		swprintf(str,L"运行时间:%.4f 秒",(t2-t1)/1000.0f);
+		
+		m_lstDisplay.AddString(str);
+		if(converged)
+			m_lstDisplay.AddString(L"收敛性:true");
+		else
+			m_lstDisplay.AddString(L"收敛性:false");
+		for(int i=0;i<4;i++)
+		{
+			swprintf(str,L"%f,%f.%f,%f",mat(i,0),mat(i,1),mat(i,2),mat(i,3));
+			m_lstDisplay.AddString(str);
+		}
+
+		
+	}
 }

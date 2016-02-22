@@ -5,6 +5,9 @@ class CGlobalVariable
 public:
 	CGlobalVariable(void);
 	virtual ~CGlobalVariable(void);
+public:
+	bool ComputeRigidTranformation(int from, int to, D3DXMATRIX* trans);
+
 	
 public:
 	int nActiveMesh_;
@@ -25,6 +28,7 @@ public:
 	BOOL m_chkZ;
 
 	IDirect3DDevice9*pd3dDevice;
+
 	
 };
 

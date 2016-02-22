@@ -47,4 +47,10 @@ public:
 	CComboBox m_cboFileList;
 	afx_msg void OnCbnSelchangeComboFilelist();
 	afx_msg void OnBnClickedRemovemodel();
+	afx_msg void OnBnClickedRigidtransformation();
+	// 显示相关变换信息
+	CListBox m_lstDisplay;
+	// #vertex
+	long m_iVertexCount;
+	// #vertex
 };

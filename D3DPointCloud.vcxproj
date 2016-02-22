@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,11 +53,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\PCL 1.6.0\3rdParty\VTK\include\vtk-5.8;D:\PCL 1.6.0\include\pcl-1.6;D:\PCL 1.6.0\3rdParty\Eigen\include;D:\PCL 1.6.0\3rdParty\Boost\include;C:\Program Files (x86)\OpenNI\Include;D:\PCL 1.6.0\3rdParty\FLANN\include;D:\PCL 1.6.0\3rdParty\Qhull\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;d3dx9.lib;winmm.lib;dxerr.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;winmm.lib;dxerr.lib;D:\PCL 1.6.0\3rdParty\FLANN\lib\flann_cpp_s-gd.lib;D:\PCL 1.6.0\lib\pcl_kdtree_debug.lib;D:\PCL 1.6.0\lib\pcl_common_debug.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

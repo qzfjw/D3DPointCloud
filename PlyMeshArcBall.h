@@ -21,6 +21,14 @@ public:
 	CPlyMeshArcBall(void);
 	virtual ~CPlyMeshArcBall(void);
 	const CPlyMeshArcBall& operator=( const CPlyMeshArcBall& rhs );
+	long GetSize()
+	{
+		return m_iVertex;
+	};
+	CUSTOM_VERT_POS *GetBuffer()
+	{
+		return m_pVB;
+	};
 public:
 	HRESULT Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice );
 	void Render(LPDIRECT3DDEVICE9 pd3dDevice);

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "PlyMeshArcBall.h"
-
+#include <fstream>
 
 CPlyMeshArcBall::CPlyMeshArcBall(void)
 {
@@ -22,7 +22,7 @@ CPlyMeshArcBall::~CPlyMeshArcBall(void)
 }
 HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice )
 {
-	FILE	 *fp;
+	
 	size_t len = wcslen(wszFileName) + 1;
 	size_t converted = 0;
 	char *szFileName;
@@ -31,54 +31,121 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 
 	szFileName=(char*)malloc(len*sizeof(char));
 	wcstombs_s(&converted, szFileName, len,wszFileName, _TRUNCATE);
-	if ((fp = fopen(szFileName, "rb")) == NULL) 
-	{ 
-		printf("open file error!\n");
-		return -1;
-	}
-	free(szFileName);
 
-	long vn = ReadVertexCount(fp);//read #vertex
-	if( m_pVB != NULL )
-	{
-		free( m_pVB );
-		m_pVB = NULL;
-	}
-	SkipHeader(fp);//skip remain header
-	fseek(fp,1,SEEK_CUR);
-	
-
-	m_pVB = ( CUSTOM_VERT_POS*)malloc(vn*sizeof(CUSTOM_VERT_POS));//read vertex data 
-	CUSTOM_VERT_POS*pVertex=m_pVB;
-	
-	unsigned char RF6[6*sizeof(float)];
 	float maxx,maxy,maxz,minx,miny,minz; 
-	maxx=maxy=maxz=FLT_MIN;
+	maxx=maxy=maxz=-FLT_MAX;
 	minx=miny=minz=FLT_MAX;
-	for(long i=0; (i<vn)&&!feof(fp); i++)
+
+	long vn=0;
+	if(strstr(szFileName,".ply")!=NULL) //parsing ply file
 	{
-		fread((void*)RF6,sizeof(float),6,fp);//读取6个浮点数
-		unsigned char *p = RF6;
-		pVertex->x =GetFloat(p);
-		p+=sizeof(float);
-		pVertex->y = GetFloat(p);
-		p+=sizeof(float);
-		pVertex->z = GetFloat(p);
+		FILE	 *fp;
+		if ((fp = fopen(szFileName, "rb")) == NULL) 
+		{ 
+			printf("open file error!\n");
+			free(szFileName);
+			return -1;
+		}
+		free(szFileName);
+
+		vn = ReadVertexCount(fp);//read #vertex
+		if( m_pVB != NULL )
+		{
+			free( m_pVB );
+			m_pVB = NULL;
+		}
+		SkipHeader(fp);//skip remain header
+		fseek(fp,1,SEEK_CUR);
 	
-		if(pVertex->x>maxx)maxx=pVertex->x;
-		else if(pVertex->x<minx)minx=pVertex->x;
+		m_pVB = ( CUSTOM_VERT_POS*)malloc(vn*sizeof(CUSTOM_VERT_POS));//read vertex data 
+		CUSTOM_VERT_POS*pVertex=m_pVB;
+	
+		unsigned char RF6[6*sizeof(float)];
+	
+		for(long i=0; (i<vn)&&!feof(fp); i++)
+		{
+			fread((void*)RF6,sizeof(float),6,fp);//读取6个浮点数
+			unsigned char *p = RF6;
+			pVertex->x =GetFloat(p);
+			p+=sizeof(float);
+			pVertex->y = GetFloat(p);
+			p+=sizeof(float);
+			pVertex->z = GetFloat(p);
+	
+			if(pVertex->x>maxx)maxx=pVertex->x;
+			if(pVertex->x<minx)minx=pVertex->x;
 		
-		if(pVertex->y>maxy)maxy=pVertex->y;
-		else if(pVertex->y<miny)miny=pVertex->y;
+			if(pVertex->y>maxy)maxy=pVertex->y;
+			if(pVertex->y<miny)miny=pVertex->y;
 		
-		if(pVertex->z>maxz)maxz=pVertex->z;
-		else if(pVertex->z<minz)minz=pVertex->z;
+			if(pVertex->z>maxz)maxz=pVertex->z;
+			if(pVertex->z<minz)minz=pVertex->z;
 		
-		pVertex++;
+			pVertex++;
+
+		}
+		fclose(fp);
 
 	}
+	else if(strstr(szFileName,".obj")!=NULL) //parsing obj file
+	{
+		CGrowableArray <D3DXVECTOR3> Positions;
+		std::wifstream InFile( szFileName );
+		if( !InFile )
+		{
+			printf( "wifstream::open file error!\n");
+			free(szFileName);
+			return -1;
+		}
+		for(; ; )
+		{
+			// File input
+			WCHAR strCommand[256] = {0};
+			InFile >> strCommand;
+			if( !InFile )
+				break;
+			//if( 0 == wcscmp( strCommand, L"#" ) )
+			//{
+			//	// Comment
+			//}
+			//else 
+			if( 0 == wcscmp( strCommand, L"v" ) )
+			{
+				// Vertex Position
+				float x, y, z;
+				InFile >> x >> y >> z;
+				Positions.Add( D3DXVECTOR3( x, y, z ) );
+			}
+			InFile.ignore( 1000, '\n' );
+		}
+		// Cleanup
+		InFile.close();
 
+		vn = Positions.GetSize();
+		m_pVB = ( CUSTOM_VERT_POS*)malloc(vn*sizeof(CUSTOM_VERT_POS));//read vertex data 
+		CUSTOM_VERT_POS*pVertex=m_pVB;
+		for(long i=0; i < vn; i++)
+		{
+			pVertex->x = Positions.GetAt(i).x;
+			pVertex->y = Positions.GetAt(i).y;
+			pVertex->z = Positions.GetAt(i).z;
+			
+			if(pVertex->x>maxx)maxx=pVertex->x;
+			if(pVertex->x<minx)minx=pVertex->x;
+		
+			if(pVertex->y>maxy)maxy=pVertex->y;
+			if(pVertex->y<miny)miny=pVertex->y;
+		
+			if(pVertex->z>maxz)maxz=pVertex->z;
+			if(pVertex->z<minz)minz=pVertex->z;
 	
+			pVertex++;
+
+		}
+		Positions.RemoveAll();
+	}
+
+				
 	v3max_ = D3DXVECTOR3(maxx,maxy,maxz);
 	v3min_ = D3DXVECTOR3(minx,miny,minz);
 	//D3DXMatrixTranslation(mat,-v3max.x,-v3max.y,-v3max.z);
@@ -90,13 +157,11 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 		v3pos_.z = -v3pos_.z;
 	//model_orgin_.x +=150;
 	D3DXVECTOR3 volume = v3max_ - v3min_;
-	
-
-	
+		
 	m_iVertex = vn;
 	LoadD3D_VB(pd3dDevice);
 	BuildBound();
-	fclose(fp);
+
 	return 0;
 }
 
@@ -193,6 +258,7 @@ void CPlyMeshArcBall::LoadD3D_VB(IDirect3DDevice9* pd3dDevice )
 	if( iResult != D3D_OK )
 	{
 		printf( "Create VB Failed\n" );
+		return;
 	}
 
 	//now fill VB

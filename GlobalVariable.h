@@ -26,6 +26,8 @@ public:
 	BOOL m_chkY;
 	// 是否选中Z轴
 	BOOL m_chkZ;
+	//ICP最大迭代次数
+	int MaximumIterations_;
 
 	IDirect3DDevice9*pd3dDevice;
 

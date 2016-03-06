@@ -18,6 +18,7 @@ CGlobalVariable::CGlobalVariable(void)
        meshes_[i].Destroy();
     meshes_.RemoveAll();
 	nActiveMesh_ = -1; 
+	MaximumIterations_ = 10;
 }
 
 
@@ -68,17 +69,18 @@ bool CGlobalVariable::ComputeRigidTranformation(int from, int to, D3DXMATRIX* tr
 	 icp.setInputTarget(cloud_out);
 	 pcl::PointCloud<pcl::PointXYZ> Final;
 
+	 
 	 // Set the max correspondence distance to 5cm (e.g., correspondences with higher distances will be ignored)
-	 icp.setMaxCorrespondenceDistance (0.05);
+	 icp.setMaxCorrespondenceDistance (0.05);//0.05
 	 // Set the maximum number of iterations (criterion 1)
-	icp.setMaximumIterations (5);
+	icp.setMaximumIterations (MaximumIterations_);
 	// Set the transformation epsilon (criterion 2)
-	icp.setTransformationEpsilon (1e-8);
+	icp.setTransformationEpsilon (1e-6);
 	// Set the euclidean distance difference epsilon (criterion 3)
-	icp.setEuclideanFitnessEpsilon (1);
+	icp.setEuclideanFitnessEpsilon (1);//1
 	// Perform the alignment
 	icp.align(Final);
-
+	
 	 bool converged = icp.hasConverged();
 	 //std::cout << "has converged:" << icp.hasConverged() << " score: " <<
      float score = icp.getFitnessScore();

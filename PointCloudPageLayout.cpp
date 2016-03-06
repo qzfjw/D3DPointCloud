@@ -24,6 +24,7 @@ CPointCloudPageLayout::CPointCloudPageLayout()
 	, m_chkZ(FALSE)
 	//, m_lVertexCount(0)
 	, m_iVertexCount(0)
+	, MaximumIterations_(10)
 {
 	m_edtModelStep = gGlobalPara.m_edtModelStep;
 	m_edtModel_X = gGlobalPara.m_edtModel_X;
@@ -60,8 +61,9 @@ void CPointCloudPageLayout::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDTVERTEXCOUNT, m_iVertexCount);
 	DDX_Control(pDX, IDC_COMBO_FILELIST, m_cboFileList);
 	DDX_Control(pDX, IDC_DISPLAYTRANFORMATIONS, m_lstDisplay);
-	
-	
+
+
+	DDX_Text(pDX, IDC_MAXIMUMITERATIONS, MaximumIterations_);
 }
 
 
@@ -76,6 +78,8 @@ BEGIN_MESSAGE_MAP(CPointCloudPageLayout, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_FILELIST, &CPointCloudPageLayout::OnCbnSelchangeComboFilelist)
 	ON_BN_CLICKED(IDC_REMOVEMODEL, &CPointCloudPageLayout::OnBnClickedRemovemodel)
 	ON_BN_CLICKED(IDC_RIGIDTRANSFORMATION, &CPointCloudPageLayout::OnBnClickedRigidtransformation)
+	ON_BN_CLICKED(IDC_APPLYRIGIDTRANSFORMATION, &CPointCloudPageLayout::OnBnClickedApplyrigidtransformation)
+	ON_EN_KILLFOCUS(IDC_MAXIMUMITERATIONS, &CPointCloudPageLayout::OnEnKillfocusMaximumiterations)
 END_MESSAGE_MAP()
 
 
@@ -242,16 +246,20 @@ void CPointCloudPageLayout::OnBnClickedRigidtransformation()
 		WCHAR str[200];
 		//swprintf(str,L"Hello,world.\n%d",s);
 		//m_lstDisplay.AddString(str);
-		D3DXMATRIX mat;
+		//D3DXMATRIX mat;
 		
-		
+		gGlobalPara.MaximumIterations_ = 	MaximumIterations_;
+
 		m_lstDisplay.AddString(L"正在计算中......");
 		long t1=GetTickCount();//开始时间(ms) 
-		bool converged = gGlobalPara.ComputeRigidTranformation(from,to,&mat);
+		bool converged = gGlobalPara.ComputeRigidTranformation(from,to,&rigidtransformation_mat_);
+		D3DXMatrixTranspose(&rigidtransformation_mat_,&rigidtransformation_mat_);
 		long t2=GetTickCount();//结束时间(ms)         
 		m_lstDisplay.AddString(L"计算完成.");
 		swprintf(str,L"运行时间:%.4f 秒",(t2-t1)/1000.0f);
-		
+		m_lstDisplay.AddString(str);
+
+		swprintf(str,L"迭代次数:%d",MaximumIterations_);
 		m_lstDisplay.AddString(str);
 		if(converged)
 			m_lstDisplay.AddString(L"收敛性:true");
@@ -259,10 +267,28 @@ void CPointCloudPageLayout::OnBnClickedRigidtransformation()
 			m_lstDisplay.AddString(L"收敛性:false");
 		for(int i=0;i<4;i++)
 		{
-			swprintf(str,L"%f,%f.%f,%f",mat(i,0),mat(i,1),mat(i,2),mat(i,3));
+			swprintf(str,L"%f,%f.%f,%f",rigidtransformation_mat_(i,0),rigidtransformation_mat_(i,1),rigidtransformation_mat_(i,2),rigidtransformation_mat_(i,3));
 			m_lstDisplay.AddString(str);
 		}
 
 		
 	}
+}
+
+
+void CPointCloudPageLayout::OnBnClickedApplyrigidtransformation()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int to = gGlobalPara.nActiveMesh_;
+	int from = (to + 1) % gGlobalPara.meshes_.GetSize();
+
+	gGlobalPara.meshes_[from].SetRigidTransformation(&rigidtransformation_mat_);
+}
+
+
+void CPointCloudPageLayout::OnEnKillfocusMaximumiterations()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	UpdateData(FALSE);
 }

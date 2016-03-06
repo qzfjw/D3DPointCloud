@@ -33,6 +33,10 @@ public:
 		model_scal_factor_ = f;
 
 	}
+	void SetRigidTransformation(D3DXMATRIX* mat)
+	{
+		rigidtransformation_matrix_ = *mat;
+	}
 	const CMeshArcBall& operator=( const CMeshArcBall& rhs );
    
 	
@@ -54,6 +58,8 @@ protected:
 	D3DXMATRIX world_matrix_ ;			// World matrix of model
 	ArcBall world_arcball_ ;			// Model arc ball
 	ID3DXMesh* p_model_mesh_;
+
+	D3DXMATRIX rigidtransformation_matrix_;
 	 
 };
 

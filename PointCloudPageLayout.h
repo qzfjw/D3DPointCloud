@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
 
+#include "d3dx9.h"
 
 
 // CPointCloudPageLayout 对话框
@@ -22,6 +23,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	D3DXMATRIX rigidtransformation_mat_;
 	// 增加或减少的量
 	float m_edtModelStep;
 	afx_msg void OnEnKillfocusModelStep();
@@ -53,4 +55,8 @@ public:
 	// #vertex
 	long m_iVertexCount;
 	// #vertex
+	afx_msg void OnBnClickedApplyrigidtransformation();
+	// ICP方法最大迭代次数
+	int MaximumIterations_;
+	afx_msg void OnEnKillfocusMaximumiterations();
 };

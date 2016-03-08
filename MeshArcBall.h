@@ -11,14 +11,19 @@ public:
 	void Destroy();
 public:
 	void Reset() ;
-	HRESULT Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice );
+	HRESULT Create( LPCWSTR wszFileName,IDirect3DDevice9* pd3dDevice);
 	void OnFrameMove() ;
-	void Render(LPDIRECT3DDEVICE9 pd3dDevice );
+	void Render();
 	HRESULT HandleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ;
 	const D3DXMATRIX GetWorldMatrix() const ;
+	
 	void SetOrgin(D3DXVECTOR3 org)
 	{
 		model_orgin_ = org;
+	}
+	D3DXVECTOR3 GetOrgin()
+	{
+		return model_orgin_;
 	}
 	void SetPos(D3DXVECTOR3 p)
 	{
@@ -60,6 +65,8 @@ protected:
 	ID3DXMesh* p_model_mesh_;
 
 	D3DXMATRIX rigidtransformation_matrix_;
+
+	IDirect3DDevice9* m_pd3dDevice; 
 	 
 };
 

@@ -359,3 +359,6 @@ template<typename TYPE> HRESULT CGrowableArray <TYPE>::Remove( int nIndex )
 
     return S_OK;
 }
+
+float frand(float fmin,float fmax);
+

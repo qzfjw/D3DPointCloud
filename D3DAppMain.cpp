@@ -196,7 +196,7 @@ void CD3DAppMain::FrameRender(float fTime,float fElapsedTime)
 				SetupLight();
 
 			}
-			gGlobalPara.meshes_[i].Render(d3ddevice_);
+			gGlobalPara.meshes_[i].Render();
 			 //CMeshArcBall temp = meshes_[i];
 			 //temp.Render(d3ddevice_);
 		}

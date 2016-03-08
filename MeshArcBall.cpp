@@ -33,6 +33,7 @@ const CMeshArcBall& CMeshArcBall::operator=(const CMeshArcBall& rhs)
 	model_volume_= rhs.model_volume_;
 	world_matrix_ = rhs.world_matrix_;
 	world_arcball_ = rhs.world_arcball_;
+	m_pd3dDevice = rhs.m_pd3dDevice;
 		
     SAFE_RELEASE(p_model_mesh_);
     if( (p_model_mesh_ = rhs.p_model_mesh_ ) != 0 ) p_model_mesh_->AddRef();
@@ -91,15 +92,14 @@ void CMeshArcBall::OnFrameMove()
 
 	//D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&rigidtransformation_matrix_);
 	
-
-	
 }
-void CMeshArcBall::Render(LPDIRECT3DDEVICE9 pd3dDevice )
+
+void CMeshArcBall::Render()
 {
 	 
 	if(p_model_mesh_)
 	{
-		pd3dDevice->SetTransform(D3DTS_WORLD, &world_matrix_);
+		m_pd3dDevice->SetTransform(D3DTS_WORLD, &world_matrix_);
 		p_model_mesh_->DrawSubset(0);
 	}
 

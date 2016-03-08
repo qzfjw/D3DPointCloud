@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CPointCloudPageLayout, CPropertyPage)
 	ON_BN_CLICKED(IDC_RIGIDTRANSFORMATION, &CPointCloudPageLayout::OnBnClickedRigidtransformation)
 	ON_BN_CLICKED(IDC_APPLYRIGIDTRANSFORMATION, &CPointCloudPageLayout::OnBnClickedApplyrigidtransformation)
 	ON_EN_KILLFOCUS(IDC_MAXIMUMITERATIONS, &CPointCloudPageLayout::OnEnKillfocusMaximumiterations)
+	ON_BN_CLICKED(IDC_CENTRALALIGN, &CPointCloudPageLayout::OnBnClickedCentralalign)
 END_MESSAGE_MAP()
 
 
@@ -291,4 +292,18 @@ void CPointCloudPageLayout::OnEnKillfocusMaximumiterations()
 	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
 	UpdateData(FALSE);
+}
+
+
+void CPointCloudPageLayout::OnBnClickedCentralalign()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	int to = gGlobalPara.nActiveMesh_;  //目标
+	int from = (to + 1) % gGlobalPara.meshes_.GetSize();  //操作对象
+	//WCHAR str[200];
+	//gGlobalPara.ComputeRigidTranformation(from,to,&rigidtransformation_mat_);
+	//D3DXMatrixTranspose(&rigidtransformation_mat_,&rigidtransformation_mat_);
+	gGlobalPara.CenterAlign(from,to);
+
+	
 }

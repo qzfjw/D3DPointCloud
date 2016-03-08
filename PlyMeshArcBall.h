@@ -9,11 +9,12 @@
 //};
 
 #define D3D_FVF_CUSTOMVERTEX_POS (D3DFVF_XYZ)
-struct CUSTOM_VERT_POS{
-	float x;
-	float y;
-	float z;
-};
+//struct CUSTOM_VERT_POS{
+//	float x;
+//	float y;
+//	float z;
+//};
+typedef D3DXVECTOR3    CUSTOM_VERT_POS;
 class CPlyMeshArcBall :
 	public CMeshArcBall
 {
@@ -31,13 +32,16 @@ public:
 	};
 public:
 	HRESULT Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevice );
-	void Render(LPDIRECT3DDEVICE9 pd3dDevice);
+	void Render();
 	void BuildBound();
+	void ChangeOrgin(D3DXVECTOR3 org,D3DXVECTOR3 pos);
+	void TransformationCoord(D3DXVECTOR3 morgin,float rx,float ry,float rz);
+
 private:
 	int	  ReadLine(FILE*fp,char*buf);
 	long  ReadVertexCount(FILE *fp);
 	void  SkipHeader(FILE *fp);
-	void  LoadD3D_VB(IDirect3DDevice9* pd3dDevice );
+	void  LoadD3D_VB();
 	float GetFloat(unsigned char *buf);
 protected:
 	long m_iVertex;    //# vertex 
@@ -47,6 +51,7 @@ protected:
 	LPDIRECT3DVERTEXBUFFER9 m_pD3DVB;
 	//LPDIRECT3DINDEXBUFFER9  m_pD3DIB;
 	CUSTOM_VERT_POS *m_pBoundVB;
+	IDirect3DDevice9* m_pd3dDevice;
 
 };
 

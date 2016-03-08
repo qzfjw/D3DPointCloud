@@ -59,4 +59,5 @@ public:
 	// ICP方法最大迭代次数
 	int MaximumIterations_;
 	afx_msg void OnEnKillfocusMaximumiterations();
+	afx_msg void OnBnClickedCentralalign();
 };

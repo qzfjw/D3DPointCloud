@@ -7,6 +7,7 @@ public:
 	virtual ~CGlobalVariable(void);
 public:
 	bool ComputeRigidTranformation(int from, int to, D3DXMATRIX* trans);
+	void CenterAlign(int from, int to);
 
 	
 public:

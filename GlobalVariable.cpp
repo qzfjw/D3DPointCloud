@@ -71,13 +71,13 @@ bool CGlobalVariable::ComputeRigidTranformation(int from, int to, D3DXMATRIX* tr
 
 	 
 	 // Set the max correspondence distance to 5cm (e.g., correspondences with higher distances will be ignored)
-	 icp.setMaxCorrespondenceDistance (1000000.0f);//0.05
+	 icp.setMaxCorrespondenceDistance (0.05f);//0.05
 	 // Set the maximum number of iterations (criterion 1)
 	icp.setMaximumIterations (MaximumIterations_);
 	// Set the transformation epsilon (criterion 2)
 	icp.setTransformationEpsilon (1e-6);
 	// Set the euclidean distance difference epsilon (criterion 3)
-	icp.setEuclideanFitnessEpsilon (0.001f);//1
+	icp.setEuclideanFitnessEpsilon (1.0f);//1
 	// Perform the alignment
 	icp.align(Final);
 	

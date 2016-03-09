@@ -3,7 +3,7 @@
 
 CMeshArcBall::CMeshArcBall()
 	:frame_need_update_(false),
-	 model_scal_factor_(1.5f),
+	 model_scal_factor_(1.0f),
 	 model_orgin_(0.0f,0.0f,0.0f),
 	 model_volume_(0.0f,0.0f,0.0f),
 	 v3min_(0.0f,0.0f,0.0f),
@@ -33,6 +33,7 @@ const CMeshArcBall& CMeshArcBall::operator=(const CMeshArcBall& rhs)
 	model_volume_= rhs.model_volume_;
 	world_matrix_ = rhs.world_matrix_;
 	world_arcball_ = rhs.world_arcball_;
+	rigidtransformation_matrix_ = rhs.rigidtransformation_matrix_;
 	m_pd3dDevice = rhs.m_pd3dDevice;
 		
     SAFE_RELEASE(p_model_mesh_);
@@ -77,20 +78,43 @@ void CMeshArcBall::OnFrameMove()
 	frame_need_update_ = false ;
 	// Get the inverse of the view Arcball's rotation matrix
 	D3DXMATRIX mt;
-	D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);//set model center as orgin
 
-	D3DXMatrixMultiply(&mt,&rigidtransformation_matrix_,&mt);
+	//D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);//set model center as orgin
+	//D3DXMatrixMultiply(&mt,&rigidtransformation_matrix_,&mt);
+	//D3DXMatrixMultiply(&world_matrix_,world_arcball_.GetRotationMatrix(),&mt); //roatated with the orgin
+	//D3DXMatrixTranslation(&mt,-model_orgin_.x,-model_orgin_.y,-model_orgin_.z); //
+	//D3DXMatrixMultiply(&world_matrix_,&mt,&world_matrix_);
+	//D3DXMatrixScaling(&mt,model_scal_factor_,model_scal_factor_,model_scal_factor_);
+	//D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
+	//D3DXMatrixTranslation(&mt,v3pos_.x,v3pos_.y,v3pos_.z);//0.0f,0.0f,-422.0f);//
+	//D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
+	
+	D3DXMatrixIdentity(&world_matrix_);
 
-	D3DXMatrixMultiply(&world_matrix_,world_arcball_.GetRotationMatrix(),&mt); //roatated with the orgin
-	D3DXMatrixTranslation(&mt,-model_orgin_.x,-model_orgin_.y,-model_orgin_.z); //
-	D3DXMatrixMultiply(&world_matrix_,&mt,&world_matrix_);
+	//step1:center based arcball rotation
+	D3DXMatrixTranslation(&mt,-model_orgin_.x,-model_orgin_.y,-model_orgin_.z);
+	D3DXMatrixMultiply(&world_matrix_,&mt,world_arcball_.GetRotationMatrix()); //roatated with the orgin
+	D3DXMatrixTranslation(&mt,model_orgin_.x,model_orgin_.y,model_orgin_.z);//
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt); //accumulated multiply
+
+	//step2:icp rigid transformation
+	mt = rigidtransformation_matrix_; 
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt); //accumulated multiply
+	
+	//step3:translation
+	D3DXMatrixTranslation(&mt,v3pos_.x,v3pos_.y,v3pos_.z);
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt); //accumulated multiply
+
+	////step4:scaling
 	D3DXMatrixScaling(&mt,model_scal_factor_,model_scal_factor_,model_scal_factor_);
-	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
+	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt); //accumulated multiply
 
-	D3DXMatrixTranslation(&mt,v3pos_.x,v3pos_.y,v3pos_.z);//0.0f,0.0f,-422.0f);//
-	D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&mt);
 
-	//D3DXMatrixMultiply(&world_matrix_,&world_matrix_,&rigidtransformation_matrix_);
+
+
+
+
+	
 	
 }
 

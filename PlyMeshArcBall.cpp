@@ -153,11 +153,15 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 	v3min_ = D3DXVECTOR3(minx,miny,minz);
 	//D3DXMatrixTranslation(mat,-v3max.x,-v3max.y,-v3max.z);
 	model_orgin_ =(v3max_ + v3min_)/2;
-	v3pos_ = model_orgin_;
+	v3pos_ = D3DXVECTOR3(-6.0f,-12.0f,422.0f);//model_orgin_;
+	
 	if(v3pos_.z < 0)
 		v3pos_.z = -v3pos_.z;
 	if(v3pos_.z > 10.0f)
-		v3pos_.z = -v3pos_.z;
+		v3pos_.z = -v3pos_.z/2;
+	
+	
+	
 	//model_orgin_.x +=150;
 	//D3DXVECTOR3 volume = v3max_ - v3min_;
 	m_iVertex = vn;
@@ -174,11 +178,12 @@ HRESULT CPlyMeshArcBall::Create( LPCWSTR wszFileName, IDirect3DDevice9* pd3dDevi
 void CPlyMeshArcBall::TransformationCoord(D3DXVECTOR3 offv3,float rx,float ry,float rz)
 {
 	D3DXMATRIX mt,mr,m1,m2;
-	D3DXMatrixTranslation(&m1, model_orgin_.x, model_orgin_.y, model_orgin_.z);
+
+	D3DXMatrixTranslation(&m1, -model_orgin_.x, -model_orgin_.y, -model_orgin_.z);
 	D3DXMatrixRotationYawPitchRoll(&m2,ry,rx,rz);   //y,x,z
 	D3DXMatrixMultiply(&mr,&m1,&m2);
 
-	D3DXMatrixTranslation(&m1, -model_orgin_.x, -model_orgin_.y, -model_orgin_.z);
+	D3DXMatrixTranslation(&m1, model_orgin_.x, model_orgin_.y, model_orgin_.z);
 	D3DXMatrixMultiply(&mr,&mr,&m1);
 
 	D3DXMatrixTranslation(&mt, offv3.x, offv3.y, offv3.z);
@@ -218,18 +223,20 @@ void CPlyMeshArcBall::TransformationCoord(D3DXVECTOR3 offv3,float rx,float ry,fl
 }
 void CPlyMeshArcBall::ChangeOrgin(D3DXVECTOR3 neworg,D3DXVECTOR3 pos)
 {
-	D3DXVECTOR3 orgoff = neworg - model_orgin_;
-	v3pos_ = pos + orgoff;
-
-
-
+	D3DXVECTOR3 off = (pos + neworg) - (v3pos_+ model_orgin_);
+	
+	//v3pos_ +=  off;
+	v3pos_ = pos;
+	off = neworg - model_orgin_;
+			
+	
 	for(int i=0; i < m_iVertex;i++)
 	{
-		m_pVB[i] += orgoff;
+		m_pVB[i] += off;
 	}
 
-	v3max_ += orgoff;
-	v3min_ += orgoff;
+	v3max_ += off;
+	v3min_ += off;
 	
 	model_orgin_ =(v3max_ + v3min_)/2;
 	LoadD3D_VB();
